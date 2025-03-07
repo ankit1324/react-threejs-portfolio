@@ -56,7 +56,6 @@ import staples from "./company/staples.png"
 import google from "./company/google.png"
 import whmis from "./company/whmis.png"
 import aws from "./tech/aws.png";
-
 import sunnifyimage from "./demonstration 2.jpg"
 import knifethrowimage from "./knifethrow_demonstration.jpg"
 import pythonanalysis from "./data_analysis.png"
@@ -131,5 +130,5 @@ export {
   mysql,
   threejs,
   azure,
-  staples
+  staples,
 };
