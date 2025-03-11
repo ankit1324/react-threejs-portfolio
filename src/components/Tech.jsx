@@ -34,16 +34,16 @@ import {
 } from "../assets";
 
 const programming = [
-  { name: "Python", icon: python },
-  { name: "Java", icon: java },
-  { name: "C++", icon: cplusplus },
   { name: "JavaScript", icon: javascript },
   { name: "TypeScript", icon: typescript },
-  { name: "Docker", icon: docker },
-  { name: "Tailwind CSS", icon: tailwind },
   { name: "React JS", icon: reactjs },
+  { name: "Tailwind CSS", icon: tailwind },
+  // { name: "Python", icon: python },
+  // { name: "Java", icon: java },
+  { name: "C++", icon: cplusplus },
+  { name: "Docker", icon: docker },
   { name: "PostgreSQL", icon: postgresql },
-  { name: "MongoDB", icon: mongodb },
+  // { name: "MongoDB", icon: mongodb },
   { name: "Three.js", icon: threejs },
 ];
 
@@ -51,9 +51,9 @@ const itTools = [
   { name: "AWS", icon: aws },
   { name: "Ubuntu", icon: ubuntu },
   { name: "PowerShell", icon: powershell },
-  { name: "Azure", icon: azure },
-  { name: "Cisco", icon: cisco },
-  { name: "ConnectWise", icon: connectwise },
+  // { name: "Azure", icon: azure },
+  // { name: "Cisco", icon: cisco },
+  // { name: "ConnectWise", icon: connectwise },
   { name: "VirtualBox", icon: virtualbox },
   { name: "Kali Linux", icon: kalilinux },
   { name: "Wireshark", icon: wireshark },

@@ -370,7 +370,7 @@ const extracurricular = [
   {
     title:"Python Essentials 1",
     type: "Cisco Professional Certificate",
-    icon: cisco,
+    icon: cisco ,
     iconBg: "#000000",
     date: "Issued: July 2022",
     points: ["Algorithmic Techniques,Data Structures,Basic Python Programming,Searching Algorithms,Computational Problems,Algorithm Design"],

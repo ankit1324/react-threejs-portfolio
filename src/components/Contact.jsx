@@ -74,16 +74,16 @@ const Contact = () => {
 
     emailjs
       .send(
-        'service_y0o5xfi',
-        'template_tn53hil',
+        'service_8kfphq8',
+        'template_n0xy874',
         {
           from_name: form.name,
           to_name: "Ankit Chaudhary",
           from_email: form.email,
-          to_email: "sunnypatel124555@gmail.com",
+          to_email: "ankitdx245@gmail.com",
           message: form.message,
         },
-        "qKXGy2B0mb2m5HSJH"
+        "lzCupwe-D0fCLkJA5"
       )
       .then(
         () => {
@@ -145,11 +145,11 @@ const Contact = () => {
         <div className="flex justify-between items-center mb-4">
           <p className={styles.sectionSubText}>Get in touch</p>
           <a
-            href="tel:+14372161611"
+            href="tel:+919805531236"
             className="text-purple-500 hover:text-purple-400 transition-colors duration-300 flex items-center"
           >
             <FontAwesomeIcon icon={faPhone} className="mr-2" />
-            (437) 216-1611
+            +91-9805531236
           </a>
         </div>
         <h3 className={styles.sectionHeadText}>Contact.</h3>
@@ -200,7 +200,7 @@ const Contact = () => {
               name='message'
               value={form.message}
               onChange={handleChange}
-              placeholder="Hey Sunny, love the website! I'd like to chat about some opportunities you might like! 🎉"
+              placeholder="Hey Ankit, love the website! I'd like to chat about some opportunities you might like! 🎉"
               className='bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border-none font-medium transition-all duration-300 focus:ring-2 focus:ring-purple-500'
             />
           </label>
