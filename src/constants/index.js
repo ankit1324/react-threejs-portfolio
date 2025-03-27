@@ -380,16 +380,16 @@ const extracurricular = [
 
 const projects = [
   {
-    name: "FinancialFlow 💸",
+    name: "Tasty-Torando 🍔",
     description:
-      "Comprehensive personal finance management application built with Next.js and Typescript. It empowers users to take control of their financial health through intuitive tracking, insightful analytics, and personalized recommendations.",
+      "Tasty-Tornado is a web application that allows users to search for restaurants and browse through real-time restaurant information. With FoodSale, users can easily find and order food from a variety of restaurants with using Swiggy Live Api.",
     tags: [
       {
-        name: "React-native",
+        name: "React",
         color: "blue-text-gradient",
       },
       {
-        name: "Typescript",
+        name: "javascript",
         color: "green-text-gradient",
       },
       {
@@ -397,29 +397,29 @@ const projects = [
         color: "pink-text-gradient",
       },
       {
-        name: "Next.js",
+        name: "swiggy-api",
         color: "blue-text-gradient",
       },
     ],
     image: financialflowimage,
-    source_code_link: "https://github.com/sunnypatell/financialflow",
-    live_project_link: "https://financial-flow.vercel.app/",
+    source_code_link: "https://github.com/ankit1324/Tasty-Torando",
+    live_project_link: "https://tasty-torando-ten.vercel.app/",
   },
   {
-    name: "Sunnify (Spotify Downloader) ♫",
+    name: "YOUTUBE-RETOUCH 📺",
     description:
-      "Sunnify is a Spotify downloader webapp/desktop application that allows you to download entire playlists locally onto your Mac/Linux/Windows PC. The web version of the app is hosted on AWS Lambda and Elastic Beanstalk, with FastAPI ASGI production.",
+      "This project is a YouTube clone built using React, Redux, and the YouTube API. It aims to replicate some of the core functionalities of YouTube, including video playback, live chat through API polling, nested comments, search functionality, and an active button feature.",
     tags: [
       {
-        name: "python",
+        name: "Reactjs",
         color: "blue-text-gradient",
       },
       {
-        name: "webscraping",
+        name: "redux-toolkit",
         color: "green-text-gradient",
       },
       {
-        name: "AWS Lambda/Beanstalk",
+        name: "vercel",
         color: "pink-text-gradient",
       },
       {
@@ -428,24 +428,28 @@ const projects = [
       },
     ],
     image: sunnifyimage,
-    source_code_link: "https://github.com/sunnypatell/sunnify-spotify-downloader",
-    live_project_link: "https://sunnify-spotify-downloader.vercel.app/",
+    source_code_link: "https://github.com/ankit1324/YOUTUBE-RETOUCH",
+    live_project_link: "https://youtube-retouch.vercel.app/",
   },
   {
-    name: "Enterprise API Tester 🌐",
+    name: "Flixbus-Monthly-Price-Finder 🌐",
     description:
-      "Comprehensive API testing tool with support for all major HTTP methods, authentication, and CORS-friendly proxy. Features include request import/export, real-world samples, and local storage for data persistence. Built with Next.js, and TypeScript for optimal performance and developer experience.",
+      "Welcome to the FlixBus Price Scraper! This Node.js script allows you to scrape bus prices from FlixBus and export them to an Excel file. 📈\n" +
+        "\n" +
+        "🌟 Features\n" +
+        "Export data to an Excel file for easy analysis.\n" +
+        "Customize search parameters like dates, number of days",
     tags: [
       {
-        name: "Typescript",
+        name: "Node.js",
         color: "blue-text-gradient",
       },
       {
-        name: "Tailwind CSS",
+        name: "Api",
         color: "green-text-gradient",
       },
       {
-        name: "Next.js",
+        name: "Typescript",
         color: "pink-text-gradient",
       },
       {
@@ -454,68 +458,34 @@ const projects = [
       },
     ],
     image: enterpriseapitester,
-    source_code_link: "https://github.com/sunnypatell/enterprise-api-request-tester",
-    live_project_link: "https://enterprise-api-request-tester.vercel.app/",
+    source_code_link: "https://github.com/ankit1324/Flixbus-Monthly-Price-Finder",
+    live_project_link: "https://github.com/ankit1324/Flixbus-Monthly-Price-Finder",
   },
   {
-    name: "KnifeThrow 🎯",
+    name: "PureDeals 🎯",
     description:
-      "KnifeThrow is a Java Swing-based 2D mini-game, packed by maven with over 5000 lines of code. It includes a menu, game-over screens, sound effects, and custom sprites. Players unlock different knives with varied abilities in a dedicated knife shop. The game features improved collision systems, animations, and particle effects for an immersive experience.",
+      "PureDeals is an e-commerce website project showcasing features like product Browse, cart management, and user accounts. (16 words) - Good fit, covers key aspects.",
     tags: [
       {
-        name: "java",
+        name: "javascript",
         color: "blue-text-gradient",
       },
       {
-        name: "swing",
+        name: "store Api",
         color: "green-text-gradient",
       },
       {
-        name: "maven",
+        name: "Redux-toolkit",
         color: "pink-text-gradient",
       },
       {
-        name: "arcadegame",
+        name: "tailwind",
         color: "green-text-gradient",
       },
     ],
     image: knifethrowimage,
-    source_code_link: "https://github.com/sunnypatell/KnifeThrow",
-    live_project_link: "https://github.com/sunnypatell/KnifeThrow",
-  },
-  {
-    name: "COVID-19 GTA Cases Data Analysis 🧪",
-    description:
-      "A deep dive into ongoing COVID-19 outbreaks in the Greater Toronto Area (GTA), Ontario. Using data from a government-licensed dataset called Outbreaks by Public Health Unit (PHU) to explore trends and patterns in these outbreaks. This data analysis integrates the essential aspects of the data science workflow (Filesize: 3.5 MiB, 62699 lines of raw dataset)",
-    tags: [
-      {
-        name: "python",
-        color: "blue-text-gradient",
-      },
-      {
-        name: "tensorflow",
-        color: "green-text-gradient",
-      },
-      {
-        name: "scikit-learn",
-        color: "pink-text-gradient",
-      },
-      {
-        name: "pandas",
-        color: "green-text-gradient",
-      },
-      {
-        name: "matplotlib",
-        color: "pink-text-gradient",
-      },
-      {
-        name: "numpy",
-        color: "blue-text-gradient",
-      },
-    ],
-    image: pythonanalysis,
-    source_code_link: "https://drive.google.com/drive/folders/1cTbp-6-flypV-kj3-q606UwwWEralu11",
-    live_project_link: "https://drive.google.com/drive/folders/1cTbp-6-flypV-kj3-q606UwwWEralu11",
+    source_code_link: "https://github.com/ankit1324/PureDeals",
+    live_project_link: "https://pure-deals-41ua.vercel.app/",
   },
   {
     name: "Secure Password Generator 🔐",
@@ -540,8 +510,8 @@ const projects = [
       },
     ],
     image: password_generator,
-    source_code_link: "https://github.com/sunnypatell/SecurePasswordGenerator",
-    live_project_link: "https://github.com/sunnypatell/SecurePasswordGenerator",
+    source_code_link: "https://github.com",
+    live_project_link: "https://github.com",
   },
 ];
 

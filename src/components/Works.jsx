@@ -9,13 +9,13 @@ import { projects } from "../constants";
 import { fadeIn } from "../utils/motion";
 
 const ProjectCard = ({
-  name,
-  description,
-  tags,
-  image,
-  source_code_link,
-  live_project_link,
-  animate,
+                             name,
+                             description,
+                             tags,
+                             image,
+                             source_code_link,
+                             live_project_link,
+                             animate,
 }) => {
   return (
     <motion.div variants={animate}>

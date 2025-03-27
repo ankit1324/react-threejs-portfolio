@@ -64,7 +64,6 @@ const itTools = [
 const contentProduction = [
   { name: "Photoshop", icon: photoshop },
   { name: "Premiere Pro", icon: premiere },
-  { name: "Cinema 4D", icon: cinema4d },
 ];
 
 const Tech = () => {
