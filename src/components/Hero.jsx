@@ -1,136 +1,220 @@
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+
 import { styles } from "../styles";
 import { ComputersCanvas } from "./canvas";
-import { useState, useEffect } from "react";
+import { experiences, extracurricular, projects } from "../constants";
+import { resume } from "../assets";
 
-const TypewriterText = ({ texts }) => {
-  const [displayText, setDisplayText] = useState("");
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isTyping, setIsTyping] = useState(true);
+const heroPhrases = [
+  "software engineer",
+  "cloud-native builder",
+  "3D tinkerer",
+  "systems storyteller",
+];
+
+const heroStats = [
+  {
+    label: "Product drops",
+    value: projects.length.toString().padStart(2, "0"),
+    detail: "public builds & experiments",
+  },
+  {
+    label: "Certifications",
+    value: extracurricular.length.toString().padStart(2, "0"),
+    detail: "cloud, security & flight ops",
+  },
+  {
+    label: "Journeys so far",
+    value: experiences.length.toString().padStart(2, "0"),
+    detail: "roles across product teams",
+  },
+];
+
+const Typewriter = ({ phrases }) => {
+  const [index, setIndex] = useState(0);
+  const [display, setDisplay] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
-    const typingInterval = setInterval(() => {
-      if (isTyping) {
-        const currentText = texts[currentIndex];
-        if (displayText.length < currentText.length) {
-          setDisplayText((prevText) => currentText.slice(0, prevText.length + 1));
-        } else {
-          setIsTyping(false);
-          clearInterval(typingInterval);
-          setTimeout(() => {
-            setIsTyping(true);
-            setDisplayText("");
-            setCurrentIndex((prevIndex) => (prevIndex + 1) % texts.length);
-          }, 2000); // Delay before next typing cycle
-        }
-      }
-    }, 100); // Typing speed
+    const current = phrases[index];
+    const isComplete = !isDeleting && display === current;
+    const isEmpty = isDeleting && display === "";
 
-    return () => {
-      clearInterval(typingInterval);
-    };
-  }, [currentIndex, isTyping, texts, displayText]);
+    const timeout = setTimeout(() => {
+      if (isComplete) {
+        setIsDeleting(true);
+        return;
+      }
+
+      if (isEmpty) {
+        setIsDeleting(false);
+        setIndex((prev) => (prev + 1) % phrases.length);
+        return;
+      }
+
+      const nextLength = display.length + (isDeleting ? -1 : 1);
+      setDisplay(current.slice(0, nextLength));
+    }, isComplete ? 1200 : isDeleting ? 40 : 85);
+
+    return () => clearTimeout(timeout);
+  }, [display, isDeleting, index, phrases]);
 
   return (
-    <span className="inline-block text-[#915EFF] font-bold">
-      {displayText.split('').map((char, index) => (
-        <motion.span
-          key={index}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.1 }}
-        >
-          {char}
-        </motion.span>
-      ))}
-      {isTyping && (
-        <motion.span
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, repeat: Infinity, repeatType: "reverse" }}
-          className="inline-block ml-1"
-        >
-          |
-        </motion.span>
-      )}
+    <span className="inline-flex items-center font-semibold text-sky-300">
+      {display}
+      <span className="ml-2 inline-block h-5 w-[2px] animate-pulse rounded bg-sky-300" />
     </span>
   );
 };
 
-const WavingHand = () => {
-  return (
-    <img 
-      src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/72x72/1f44b.png" 
-      alt="Waving Hand"
-      className="wave-emoji"
-      style={{ display: 'inline-block', marginLeft: '10px', width: '50px', height: '50px' }}
-    />
-  );
-};
-
 const Hero = () => {
-  const typedItems = [
-    "Software Developer",
-    "Full-Stack Developer",
-    "Computer Enthusiast",
-  ];
+  const activeRole = experiences[0];
 
   return (
-    <section className="relative w-full h-screen mx-auto">
-      <style jsx>{`
-        @keyframes wave {
-          0% { transform: rotate(0deg); }
-          10% { transform: rotate(-10deg); }
-          20% { transform: rotate(12deg); }
-          30% { transform: rotate(-10deg); }
-          40% { transform: rotate(9deg); }
-          50% { transform: rotate(0deg); }
-          100% { transform: rotate(0deg); }
-        }
-        .wave-emoji {
-          animation-name: wave;
-          animation-duration: 1.8s;
-          animation-iteration-count: infinite;
-          transform-origin: 70% 70%;
-          display: inline-block;
-        }
-      `}</style>
-      <div className={`absolute inset-0 top-[120px] max-w-7xl mx-auto ${styles.paddingX} flex flex-row items-start gap-5`}>
-        <div className="flex flex-col justify-center items-center mt-5">
-          <div className="w-5 h-5 rounded-full bg-[#915EFF]" />
-          <div className="w-1 sm:h-80 h-40 violet-gradient" />
-        </div>
-
-        <div>
-          <h1 className={`${styles.heroHeadText} text-white`}>
-            Hi, I'm <span className="text-[#915EFF]">Ankit</span> <WavingHand />
-          </h1>
-          <p className={`${styles.heroSubText} mt-2 text-white-100`}>
-            I'm a <TypewriterText texts={typedItems} />
-            <br />
-            <b>Welcome to my portfolio, please view on desktop for an interactive experience!</b>
-          </p>
-        </div>
-      </div>
-      <br /><br /><br />
-
-      <ComputersCanvas />
-
-      <div className="absolute xs:bottom-10 bottom-32 w-full flex justify-center items-center">
-        <a href="#about">
-          <div className="w-[35px] h-[64px] rounded-3xl border-4 border-secondary flex justify-center items-start p-2">
-            <motion.div
-              animate={{
-                y: [0, 24, 0],
-              }}
-              transition={{
-                duration: 1.5,
-                repeat: Infinity,
-                repeatType: "loop",
-              }}
-              className="w-3 h-3 rounded-full bg-secondary mb-1"
-            />
+    <section
+      className={`relative w-full ${styles.paddingX} pt-32 pb-28`}
+      id="home"
+    >
+      <div className="mx-auto grid max-w-6xl items-start gap-10 lg:grid-cols-[1.05fr_0.95fr]">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="space-y-8"
+        >
+          <div className="flex flex-wrap items-center gap-3 text-xs uppercase tracking-[0.55em] text-slate-400">
+            <span className="rounded-full border border-white/15 bg-white/5 px-4 py-2 font-semibold text-slate-200">
+              Calm Interfaces
+            </span>
+            <span>•</span>
+            <span>Realtime Workflows</span>
           </div>
+          <div className="space-y-6">
+            <h1 className={`${styles.heroHeadText}`}>
+              Building{" "}
+              <span className="bg-gradient-to-br from-sky-400 via-slate-50 to-violet-500 bg-clip-text text-transparent">
+                immersive workbenches
+              </span>{" "}
+              for product teams.
+            </h1>
+            <p className={styles.heroSubText}>
+              I’m Ankit Chaudhary—engineering lead crafting tactile React &
+              React Native apps, 3D interfaces, and DevOps pipelines through AWS
+              ECS. Every build balances playful UI with measurable uptime.
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <span className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold text-white/80">
+                React Native · Expo + CLI
+              </span>
+              <span className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold text-white/80">
+                Three.js · R3F
+              </span>
+              <span className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold text-white/80">
+                DevOps till AWS ECS
+              </span>
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-4">
+            <a
+              href="#projects"
+              className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-sky-500 to-violet-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-sky-500/30 transition hover:translate-y-0.5"
+            >
+              See selected work
+              <span aria-hidden="true">↗</span>
+            </a>
+            <button
+              type="button"
+              onClick={() => window.open(resume, "_blank")}
+              className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/20 px-6 py-3 text-sm font-semibold text-white/90 transition hover:border-white/40"
+            >
+              Download resume
+            </button>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-3">
+            {heroStats.map((stat) => (
+              <div
+                key={stat.label}
+                className="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-[0_25px_60px_rgba(2,6,23,0.35)]"
+              >
+                <p className="text-3xl font-semibold text-white">{stat.value}</p>
+                <p className="mt-1 text-xs uppercase tracking-[0.4em] text-slate-400">
+                  {stat.label}
+                </p>
+                <p className="mt-2 text-sm text-slate-300">{stat.detail}</p>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, delay: 0.1 }}
+          className="space-y-4"
+        >
+          <div className="rounded-[32px] border border-white/10 bg-slate-950/60 backdrop-blur-xl">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 px-5 py-4 text-xs text-slate-400">
+              <div className="flex items-center gap-4">
+                <span className="rounded-full border border-white/15 px-3 py-1 text-white/80">
+                  Scene · Studio
+                </span>
+                <span className="rounded-full border border-white/15 px-3 py-1 text-white/80">
+                  Mode · Live
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="h-2 w-2 rounded-full bg-emerald-400" />
+                <p>Auto-rotate</p>
+              </div>
+            </div>
+            <div className="hero-canvas relative flex h-[460px] w-full items-center justify-center overflow-hidden rounded-[32px]">
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-slate-900/90 via-slate-900/40 to-sky-900/20" />
+              <div className="relative flex h-full w-full items-center justify-center p-4">
+                <ComputersCanvas />
+              </div>
+              <div className="pointer-events-none absolute inset-x-6 top-6 flex justify-between text-xs text-white/70">
+                <span>Realtime prototype feed</span>
+                <span>fps 60 • vsync on</span>
+              </div>
+              <div className="pointer-events-none absolute inset-x-6 bottom-6 flex flex-wrap gap-2 text-xs">
+                <span className="rounded-full border border-white/20 bg-white/10 px-3 py-1 text-white/80">
+                  OrbitControls locked
+                </span>
+                <span className="rounded-full border border-white/20 bg-white/10 px-3 py-1 text-white/80">
+                  HDR active
+                </span>
+                <span className="rounded-full border border-white/20 bg-white/10 px-3 py-1 text-white/80">
+                  PostFX bloom
+                </span>
+              </div>
+            </div>
+          </div>
+          {activeRole && (
+            <div className="rounded-2xl border border-white/10 bg-white/5 p-5 text-sm text-slate-200 shadow-[0_20px_80px_rgba(2,6,23,0.45)]">
+              <p className="text-xs uppercase tracking-[0.4em] text-slate-400">
+                Currently shipping
+              </p>
+              <p className="mt-2 font-semibold text-white">{activeRole.title}</p>
+              <p className="text-slate-400">{activeRole.company_name}</p>
+              <p className="mt-3 text-xs text-slate-500">{activeRole.date}</p>
+            </div>
+          )}
+        </motion.div>
+      </div>
+      <div className="mt-16 flex justify-center">
+        <a
+          href="#about"
+          className="group inline-flex items-center gap-4 text-xs font-semibold uppercase tracking-[0.6em] text-slate-400"
+        >
+          Scroll to explore
+          <span className="flex h-12 w-12 items-center justify-center rounded-full border border-white/20">
+            <motion.span
+              animate={{ y: [0, 8, 0] }}
+              transition={{ repeat: Infinity, duration: 1.5 }}
+              className="inline-block h-6 w-[2px] rounded-full bg-white/70"
+            />
+          </span>
         </a>
       </div>
     </section>

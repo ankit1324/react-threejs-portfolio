@@ -1,172 +1,152 @@
-import React, { useEffect, useRef } from "react";
-import { motion, useAnimation, useInView } from "framer-motion";
+import React from "react";
+import { motion } from "framer-motion";
 
 import { styles } from "../styles";
 import { SectionWrapper } from "../hoc";
-import { fadeIn, textVariant } from "../utils/motion";
-import { resume, profilepic } from "../assets";
+import { services } from "../constants";
+import { profilepic, resume } from "../assets";
 
-const ServiceCard = ({ index, title, icon }) => (
-  <motion.div
-    variants={fadeIn("up", "spring", index * 0.5, 0.75)}
-    className="w-full xs:w-[250px]"
-  >
-    <motion.div
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
-      className="w-full green-pink-gradient p-[1px] rounded-[20px] shadow-card"
-    >
-      <div className="bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col relative overflow-hidden">
-        <motion.img
-          src={icon}
-          alt="web-development"
-          className="w-16 h-16 object-contain"
-          whileHover={{ rotate: 360 }}
-          transition={{ duration: 0.8, ease: "easeInOut" }}
-        />
-
-        <h3 className="text-white text-[20px] font-bold text-center">
-          {title}
-        </h3>
-
-        <motion.div
-          className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 opacity-0"
-          whileHover={{ opacity: 0.2 }}
-          transition={{ duration: 0.3 }}
-        />
-      </div>
-    </motion.div>
-  </motion.div>
-);
+const cardVariants = {
+  hidden: { opacity: 0, y: 30 },
+  show: { opacity: 1, y: 0 },
+};
 
 const About = () => {
-  const sectionRef = useRef(null);
-  const isInView = useInView(sectionRef, { once: true, amount: 0.2 });
-  const mainControls = useAnimation();
-
-  useEffect(() => {
-    if (isInView) {
-      mainControls.start("visible");
-    }
-  }, [isInView, mainControls]);
-
   return (
-    <div ref={sectionRef} className="pt-[60px] md:pt-0 overflow-hidden">
-      <motion.div
-        initial="hidden"
-        animate={mainControls}
-        variants={{
-          hidden: { opacity: 0, y: -20 },
-          visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
-        }}
+    <section className="space-y-6 text-white">
+      <motion.p
+        initial={{ opacity: 0, y: 10 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.4 }}
+        className={`${styles.sectionSubText} text-center sm:text-left`}
       >
-        <p className={styles.sectionSubText}>Introduction</p>
-      </motion.div>
-
-      <motion.div
-        initial="hidden"
-        animate={mainControls}
-        variants={{
-          hidden: { opacity: 0, y: -20 },
-          visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
-        }}
+        Building calm tech
+      </motion.p>
+      <motion.h2
+        initial={{ opacity: 0, y: 10 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.4, delay: 0.1 }}
+        className={`${styles.sectionHeadText} text-center sm:text-left`}
       >
-        <h2 className={styles.sectionHeadText}>Overview.</h2>
-      </motion.div>
+        Designing the backstage story.
+      </motion.h2>
 
-      <div className="mt-10 flex flex-col md:flex-row items-center md:items-start gap-10">
+      <div className="mt-12 grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
         <motion.div
-          variants={fadeIn("right", "spring", 0.5, 0.75)}
-          className="w-full md:w-1/3 flex flex-col items-center"
+          variants={cardVariants}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="glass-panel p-8"
         >
-          <div className="relative w-64 h-64 rounded-full overflow-hidden shadow-[0_0_22.5px_7.5px_rgba(128,0,1028,1.0)]">
-            <div className="w-full h-full overflow-hidden">
+          <p className="text-lg text-slate-200">
+            I&apos;m a software engineer who treats the stack as a playground—
+            blending interface craft, resilient infrastructure, and automation
+            to get ideas into the real world faster. Whether it&apos;s a
+            full-stack web build, a data-heavy workflow, or a 3D moment, I
+            obsess over clarity and longevity.
+          </p>
+          <ul className="mt-6 space-y-4 text-sm text-slate-300">
+            <li className="flex gap-3">
+              <span className="text-sky-400">▹</span>
+              Led React + cloud programs for organisations like Paramotor
+              Digital Technology and IBM, balancing delightful UI with
+              measurable uptime.
+            </li>
+            <li className="flex gap-3">
+              <span className="text-sky-400">▹</span>
+              React Native builds (Expo + RN CLI) are part of the daily rhythm,
+              so mobile UX ships alongside web without redundant work.
+            </li>
+            <li className="flex gap-3">
+              <span className="text-sky-400">▹</span>
+              Translate research, security practices, and automation into
+              workflows that save hours for teams on the ground.
+            </li>
+            <li className="flex gap-3">
+              <span className="text-sky-400">▹</span>
+              Constantly prototyping with Three.js, R3F, and real-time data to
+              keep immersive moments part of the craft.
+            </li>
+            <li className="flex gap-3">
+              <span className="text-sky-400">▹</span>
+              DevOps wise I automate everything up to AWS ECS—pipelines, IaC,
+              smoke tests, and rollout playbooks without dragging in Kubernetes.
+            </li>
+          </ul>
+          <div className="mt-8 flex flex-wrap gap-4">
+            <button
+              type="button"
+              onClick={() => window.open(resume, "_blank")}
+              className="inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-sky-500 to-violet-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-sky-500/30 transition hover:translate-y-0.5"
+            >
+              Download resume
+            </button>
+            <button
+              type="button"
+              onClick={() =>
+                window.open("https://www.linkedin.com/in/ankitchaudhary1324/", "_blank")
+              }
+              className="inline-flex items-center justify-center rounded-2xl border border-white/20 px-6 py-3 text-sm font-semibold text-white/90 transition hover:border-white/40"
+            >
+              LinkedIn
+            </button>
+            <button
+              type="button"
+              onClick={() => window.open("https://github.com/ankit1324", "_blank")}
+              className="inline-flex items-center justify-center rounded-2xl border border-white/20 px-6 py-3 text-sm font-semibold text-white/90 transition hover:border-white/40"
+            >
+              GitHub
+            </button>
+          </div>
+        </motion.div>
+
+        <motion.div
+          variants={cardVariants}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="space-y-6"
+        >
+          <div className="glass-panel overflow-hidden p-2">
+            <div className="rounded-[22px] border border-white/10">
               <img
                 src={profilepic}
                 alt="Ankit Chaudhary"
-                className="w-full h-full object-cover"
-                style={{
-                  objectFit: "cover",
-                  objectPosition: "50% 50%",
-                }}
+                className="h-[360px] w-full rounded-[22px] object-cover"
+                loading="lazy"
               />
             </div>
           </div>
-          <div className="mt-10 flex flex-wrap gap-5 justify-center">
-            <motion.button
-              className="px-6 py-3 text-white bg-gradient-to-r from-blue-500 to-purple-500 rounded-md shadow-md hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 transform transition duration-500 ease-in-out hover:scale-105 active:translate-y-1 active:shadow-none no-select"
-              style={{ boxShadow: "0px 5px 0px 0px rgba(0,0,0,0.6)", transition: "all ease 0.1s" }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => window.open(resume, "_blank")}
-            >
-              <span className="font-semibold">Resume</span>
-            </motion.button>
-
-            <motion.button
-              className="px-6 py-3 text-white bg-gradient-to-r from-blue-400 to-blue-600 rounded-md shadow-md hover:bg-gradient-to-r hover:from-blue-500 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transform transition duration-500 ease-in-out hover:scale-105 active:translate-y-1 active:shadow-none no-select"
-              style={{ boxShadow: "0px 5px 0px 0px rgba(0,0,0,0.6)", transition: "all ease 0.1s" }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => window.open("https://www.linkedin.com/in/ankitchaudhary1324/", "_blank")}
-            >
-              <span className="font-semibold">LinkedIn</span>
-            </motion.button>
-
-            <motion.button
-              className="px-6 py-3 text-white bg-gradient-to-r from-gray-600 to-gray-800 rounded-md shadow-md hover:bg-gradient-to-r hover:from-gray-700 hover:to-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-opacity-50 transform transition duration-500 ease-in-out hover:scale-105 active:translate-y-1 active:shadow-none no-select"
-              style={{ boxShadow: "0px 5px 0px 0px rgba(0,0,0,0.6)", transition: "all ease 0.1s" }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => window.open("https://github.com/ankit1324", "_blank")}
-            >
-              <span className="font-semibold">GitHub</span>
-            </motion.button>
+          <div className="glass-panel p-6">
+            <p className="text-xs uppercase tracking-[0.5em] text-slate-400">
+              Focus areas
+            </p>
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              {services.map((service) => (
+                <div
+                  key={service.title}
+                  className="flex items-center gap-4 rounded-2xl border border-white/10 bg-white/5 px-4 py-3"
+                >
+                  <img
+                    src={service.icon}
+                    alt={service.title}
+                    className="h-10 w-10"
+                  />
+                  <p className="text-sm font-semibold text-white">
+                    {service.title}
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
         </motion.div>
-
-        <motion.div
-          variants={fadeIn("left", "spring", 0.5, 0.75)}
-          className="w-full md:w-2/3"
-        >
-          <motion.ul
-            variants={fadeIn("", "", 0.1, 1)}
-            className="mt-4 text-secondary text-[17px] max-w-3xl space-y-6 list-none"
-          >
-            <motion.li className="flex items-start" variants={fadeIn("up", "spring", 0.1, 0.75)}>
-              <span className="mr-4 text-2xl flex-shrink-0">👨‍💻</span>
-              <span>
-                I&apos;m a Software Engineer with over 2 years of experience in software development and cloud technologies.
-              </span>
-            </motion.li>
-            <motion.li className="flex items-start" variants={fadeIn("up", "spring", 0.2, 0.75)}>
-              <span className="mr-4 text-2xl flex-shrink-0">🎓</span>
-              <span>
-                Currently working toward my Honours Bachelor of technology in Computer Science and  at Himachal Pradesh Tech University, I&apos;m all about building reliable, scalable software that makes a difference.
-              </span>
-            </motion.li>
-            <motion.li className="flex items-start" variants={fadeIn("up", "spring", 0.3, 0.75)}>
-              <span className="mr-4 text-2xl flex-shrink-0">🛠</span>
-              <span>
-                From full-stack development to cloud-based solutions, I&apos;ve led enterprise-level projects that streamline operations and deliver real impact.
-              </span>
-            </motion.li>
-            <motion.li className="flex items-start" variants={fadeIn("up", "spring", 0.4, 0.75)}>
-              <span className="mr-4 text-2xl flex-shrink-0">🔧</span>
-              <span>
-                I enjoy automating workflows, optimizing systems, and turning complex challenges into real results. 📈
-              </span>
-            </motion.li>
-            <motion.li className="flex items-start" variants={fadeIn("up", "spring", 0.5, 0.75)}>
-              <span className="mr-4 text-2xl flex-shrink-0">💡</span>
-              <span>
-                I&apos;m always curious and constantly learning.
-              </span>
-            </motion.li>
-          </motion.ul>
-        </motion.div>
       </div>
-    </div>
+    </section>
   );
 };
 

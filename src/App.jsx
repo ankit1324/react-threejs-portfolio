@@ -1,32 +1,45 @@
-import React from 'react'
-import './App.css'
-import { BrowserRouter } from 'react-router-dom'
-import { About, Contact, Education, Experience, Extracurricular, Hero, Navbar, Tech, Works, StarsCanvas } from './components' // if you want to use skills balls make sure to import tech and do the same for src\components\index.js
-import Feedbacks from './components/Feedbacks'
-// import { Analytics } from "@vercel/analytics/react"
+import React from "react";
+import "./App.css";
+import { BrowserRouter } from "react-router-dom";
+import {
+  About,
+  Contact,
+  Education,
+  Experience,
+  Extracurricular,
+  Hero,
+  Navbar,
+  Tech,
+  Terminal,
+  Works,
+  Assistant,
+  StarsCanvas,
+} from "./components";
 
 function App() {
   return (
-      <BrowserRouter>
-        <div className='relative z-0 bg-primary'>
-          <div className="div bg-hero-pattern bg-cover bg-no-repeat bg-center">
-            <Navbar />
-            <Hero />
-          </div>
+    <BrowserRouter>
+      <div className="app-shell">
+        <div className="aurora aurora--violet -top-32 -left-24" />
+        <div className="aurora aurora--cyan top-1/3 -right-10" />
+        <div className="aurora aurora--pink bottom-0 left-1/4" />
+        <StarsCanvas />
+        <Navbar />
+        <main className="relative z-10 flex flex-col gap-6">
+          <Hero />
           <About />
           <Education />
           <Experience />
+          <Terminal />
           <Extracurricular />
           <Tech />
           <Works />
-          {/* <Feedbacks /> */}
-          <div className="div relative z-0">
-            <Contact />
-            <StarsCanvas />
-          </div>
-        </div>
-      </BrowserRouter>
-  )
+          <Contact />
+        </main>
+        <Assistant />
+      </div>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;

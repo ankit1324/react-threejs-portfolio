@@ -13,6 +13,8 @@ import Experience from "./Experience";
 import Extracurricular from "./Extracurricular";
 import Works from "./Works";
 import Contact from "./Contact";
+import Terminal from "./Terminal";
+import Assistant from "./Assistant";
 import CanvasLoader from "./Loader";
 
 export {
@@ -23,6 +25,8 @@ export {
   Education,
   Experience,
   Extracurricular,
+  Terminal,
+  Assistant,
   Works,
   Contact,
   CanvasLoader,

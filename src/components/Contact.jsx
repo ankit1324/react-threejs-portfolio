@@ -1,81 +1,50 @@
-import React, { useRef, useState, useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import emailjs from "@emailjs/browser";
-import { Toaster, toast } from 'react-hot-toast';
-import Confetti from 'react-confetti';
+import { Toaster, toast } from "react-hot-toast";
+import Confetti from "react-confetti";
 
 import { styles } from "../styles";
 import { EarthCanvas } from "./canvas";
 import { SectionWrapper } from "../hoc";
-import { slideIn } from "../utils/motion";
-
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser, faEnvelope, faComment, faPaperPlane, faSpinner, faPhone } from "@fortawesome/free-solid-svg-icons";
 
 const Contact = () => {
-  const formRef = useRef();
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    message: "",
-  });
-
+  const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
+  const [sent, setSent] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
-  const [windowDimension, setWindowDimension] = useState({
-    width: window.innerWidth,
-    height: window.innerHeight,
+  const [windowSize, setWindowSize] = useState({
+    width: typeof window !== "undefined" ? window.innerWidth : 0,
+    height: typeof window !== "undefined" ? window.innerHeight : 0,
   });
-
-  const detectSize = () => {
-    setWindowDimension({
-      width: window.innerWidth,
-      height: window.innerHeight,
-    });
-  };
 
   useEffect(() => {
-    window.addEventListener('resize', detectSize);
-    return () => {
-      window.removeEventListener('resize', detectSize);
-    };
+    const handleResize = () =>
+      setWindowSize({ width: window.innerWidth, height: window.innerHeight });
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  useEffect(() => {
-    if (showConfetti) {
-      document.body.style.overflowX = "hidden";
-    } else {
-      document.body.style.overflowX = "";
-    }
-
-    return () => {
-      document.body.style.overflowX = "";
-    };
-  }, [showConfetti]);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm({ ...form, [name]: value });
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = (event) => {
+    event.preventDefault();
 
     if (!form.name || !form.email || !form.message) {
-      toast.error("Please fill all fields before submitting. ⚠️", {
+      toast.error("Please fill in every field so I can get back to you.", {
         duration: 3000,
-        position: 'bottom-right',
       });
       return;
     }
 
     setLoading(true);
-
     emailjs
       .send(
-        'service_8kfphq8',
-        'template_n0xy874',
+        "service_8kfphq8",
+        "template_n0xy874",
         {
           from_name: form.name,
           to_name: "Ankit Chaudhary",
@@ -83,31 +52,25 @@ const Contact = () => {
           to_email: "ankitdx245@gmail.com",
           message: form.message,
         },
-        "lzCupwe-D0fCLkJA5"
+        "lzCupwe-D0fCLkJA5",
       )
       .then(
         () => {
           setLoading(false);
-          setSuccess(true);
+          setSent(true);
           setForm({ name: "", email: "", message: "" });
-          toast.success("Message sent successfully!", {
-            duration: 3000,
-            position: 'bottom-right',
-          });
+          toast.success("Message sent. I’ll reply shortly.");
           setShowConfetti(true);
           setTimeout(() => {
-            setSuccess(false);
             setShowConfetti(false);
-          }, 5000);
+            setSent(false);
+          }, 4000);
         },
         (error) => {
           setLoading(false);
           console.error(error);
-          toast.error("Something went wrong. Please try again.", {
-            duration: 3000,
-            position: 'bottom-right',
-          });
-        }
+          toast.error("Something went wrong. Please try again soon.");
+        },
       );
   };
 
@@ -116,124 +79,145 @@ const Contact = () => {
   }, []);
 
   return (
-    <div className={`xl:mt-12 flex xl:flex-row flex-col-reverse gap-10 overflow-hidden no-select`}>
-      <Toaster 
+    <section className="relative">
+      <Toaster
         position="bottom-right"
-        reverseOrder={false}
         toastOptions={{
-          className: '',
           style: {
-            border: '1px solid #713200',
-            padding: '16px',
-            color: '#713200',
+            background: "#0f172a",
+            color: "#f8fafc",
+            border: "1px solid rgba(148,163,184,0.3)",
           },
         }}
       />
       {showConfetti && (
         <Confetti
-          width={windowDimension.width}
-          height={windowDimension.height}
+          width={windowSize.width}
+          height={windowSize.height}
+          numberOfPieces={windowSize.width > 768 ? 200 : 120}
           recycle={false}
-          numberOfPieces={windowDimension.width > 768 ? 200 : 100}
           onConfettiComplete={handleConfettiComplete}
         />
       )}
-      <motion.div
-        variants={slideIn("left", "tween", 0.2, 1)}
-        className='flex-[0.75] bg-black-100 p-8 rounded-2xl'
-      >
-        <div className="flex justify-between items-center mb-4">
-          <p className={styles.sectionSubText}>Get in touch</p>
-          <a
-            href="tel:+919805531236"
-            className="text-purple-500 hover:text-purple-400 transition-colors duration-300 flex items-center"
-          >
-            <FontAwesomeIcon icon={faPhone} className="mr-2" />
-            +91-9805531236
-          </a>
-        </div>
-        <h3 className={styles.sectionHeadText}>Contact.</h3>
 
-        <form
-          ref={formRef}
-          onSubmit={handleSubmit}
-          className='mt-12 flex flex-col gap-8'
+      <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr]">
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="glass-panel rounded-3xl border border-white/10 bg-white/5 p-8"
         >
-          <div className="flex flex-col sm:flex-row gap-8">
-            <div className="flex-1">
-              <label className='flex flex-col'>
-                <span className='text-white font-medium mb-4'>
-                  <FontAwesomeIcon icon={faUser} className="text-purple-500 mr-2" /> Name
-                </span>
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <p className={`${styles.sectionSubText} text-left`}>Say hello</p>
+              <h3 className={`${styles.sectionHeadText} text-left`}>Contact</h3>
+            </div>
+            <a
+              href="tel:+919805531236"
+              className="rounded-2xl border border-white/20 px-4 py-2 text-sm font-semibold text-white/80 transition hover:border-white/40"
+            >
+              +91 98055 31236
+            </a>
+          </div>
+          <p className="mt-4 text-sm text-slate-400">
+            Tell me about the product, team, or crazy idea you&apos;re building.
+            I usually respond within 24 hours.
+          </p>
+
+          <form onSubmit={handleSubmit} className="mt-10 space-y-6">
+            <div className="grid gap-6 md:grid-cols-2">
+              <label className="flex flex-col text-sm font-semibold text-slate-200">
+                Name
                 <input
                   type="text"
-                  name='name'
+                  name="name"
                   value={form.name}
                   onChange={handleChange}
-                  placeholder="Your name"
-                  className='bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border-none font-medium transition-all duration-300 focus:ring-2 focus:ring-purple-500'
+                  placeholder="Who should I thank?"
+                  className="mt-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-base text-white placeholder:text-slate-500 focus:border-sky-400 focus:outline-none"
                 />
               </label>
-            </div>
-            <div className="flex-1">
-              <label className='flex flex-col'>
-                <span className='text-white font-medium mb-4'>
-                  <FontAwesomeIcon icon={faEnvelope} className="text-purple-500 mr-2" /> Email
-                </span>
+              <label className="flex flex-col text-sm font-semibold text-slate-200">
+                Email
                 <input
                   type="email"
-                  name='email'
+                  name="email"
                   value={form.email}
                   onChange={handleChange}
-                  placeholder="Your email"
-                  className='bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border-none font-medium transition-all duration-300 focus:ring-2 focus:ring-purple-500'
+                  placeholder="your@email.com"
+                  className="mt-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-base text-white placeholder:text-slate-500 focus:border-sky-400 focus:outline-none"
                 />
               </label>
             </div>
+            <label className="flex flex-col text-sm font-semibold text-slate-200">
+              Message
+              <textarea
+                rows={6}
+                name="message"
+                value={form.message}
+                onChange={handleChange}
+                placeholder="Tell me about the vision, the problems, or the vibe you’d like to create."
+                className="mt-2 rounded-3xl border border-white/10 bg-white/5 px-4 py-4 text-base text-white placeholder:text-slate-500 focus:border-sky-400 focus:outline-none"
+              />
+            </label>
+            <button
+              type="submit"
+              disabled={loading}
+              className="inline-flex w-full items-center justify-center gap-2 rounded-3xl bg-gradient-to-r from-sky-500 to-violet-500 px-6 py-4 text-sm font-semibold text-white shadow-lg shadow-sky-500/30 transition hover:translate-y-0.5 disabled:opacity-60"
+            >
+              {loading ? "Sending..." : sent ? "Delivered — talk soon!" : "Send message"}
+            </button>
+          </form>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="glass-panel overflow-hidden rounded-3xl border border-white/10 bg-white/5"
+        >
+          <div className="flex items-center justify-between border-b border-white/10 px-6 py-5">
+            <div>
+              <p className="text-xs uppercase tracking-[0.4em] text-slate-400">
+                Availability
+              </p>
+              <p className="text-base font-semibold text-white">
+                Open for new collaborations
+              </p>
+            </div>
+            <div className="rounded-2xl border border-white/20 px-3 py-1 text-xs text-slate-300">
+              GMT+5:30
+            </div>
           </div>
-          <label className='flex flex-col'>
-            <span className='text-white font-medium mb-4'>
-              <FontAwesomeIcon icon={faComment} className="text-purple-500 mr-2" /> Message
-            </span>
-            <textarea
-              rows={7}
-              name='message'
-              value={form.message}
-              onChange={handleChange}
-              placeholder="Hey Ankit, love the website! I'd like to chat about some opportunities you might like! 🎉"
-              className='bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border-none font-medium transition-all duration-300 focus:ring-2 focus:ring-purple-500'
-            />
-          </label>
-
-          <button
-            type='submit'
-            className='bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-3 px-8 rounded-lg transition-all duration-300 flex items-center justify-center'
-            disabled={loading}
-          >
-            {loading ? (
-              <FontAwesomeIcon icon={faSpinner} spin />
-            ) : success ? (
-              <span className="flex items-center">
-                Sent Successfully
-                <FontAwesomeIcon icon={faPaperPlane} className="ml-2" />
-              </span>
-            ) : (
-              <span className="flex items-center">
-                Send Message
-                <FontAwesomeIcon icon={faPaperPlane} className="ml-2" />
-              </span>
-            )}
-          </button>
-        </form>
-      </motion.div>
-
-      <motion.div
-        variants={slideIn("right", "tween", 0.2, 1)}
-        className='xl:flex-1 xl:h-auto md:h-[550px] h-[350px]'
-      >
-        <EarthCanvas />
-      </motion.div>
-    </div>
+          <div className="h-[420px] w-full">
+            <EarthCanvas />
+          </div>
+          <div className="grid gap-4 border-t border-white/10 px-6 py-6 text-sm text-slate-300">
+            <div className="flex items-center justify-between">
+              <span>Email</span>
+              <a
+                href="mailto:ankitdx245@gmail.com"
+                className="font-semibold text-white hover:underline"
+              >
+                ankitdx245@gmail.com
+              </a>
+            </div>
+            <div className="flex items-center justify-between">
+              <span>Current base</span>
+              <p className="font-semibold text-white">
+                Mumbai · Himachal Pradesh
+              </p>
+            </div>
+            <div className="flex items-center justify-between">
+              <span>Response time</span>
+              <p className="font-semibold text-white">~24 hours</p>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </section>
   );
 };
 

@@ -1,233 +1,126 @@
-import React, { useEffect, useState, useRef } from "react";
-import { motion, useAnimation, useInView } from "framer-motion";
+import React, { useMemo, useState } from "react";
+import { motion } from "framer-motion";
+
 import { styles } from "../styles";
 import { SectionWrapper } from "../hoc";
-import { textVariant } from "../utils/motion";
-
-// Import all assets
 import {
-  python,
-  javascript,
-  java,
-  cplusplus,
-  typescript,
-  docker,
-  tailwind,
-  reactjs,
-  postgresql,
-  mongodb,
-  threejs,
-  aws,
-  ubuntu,
-  powershell,
-  azure,
-  cisco,
-  connectwise,
-  virtualbox,
-  kalilinux,
-  wireshark,
-  nmap,
-  johntheripper,
-  photoshop,
-  premiere,
-  cinema4d,
-} from "../assets";
+  technologies,
+  itTools,
+  cybersecurityTools,
+  designTools,
+} from "../constants";
 
-const programming = [
-  { name: "JavaScript", icon: javascript },
-  { name: "TypeScript", icon: typescript },
-  { name: "React JS", icon: reactjs },
-  { name: "Tailwind CSS", icon: tailwind },
-  // { name: "Python", icon: python },
-  // { name: "Java", icon: java },
-  { name: "C++", icon: cplusplus },
-  { name: "Docker", icon: docker },
-  { name: "PostgreSQL", icon: postgresql },
-  // { name: "MongoDB", icon: mongodb },
-  { name: "Three.js", icon: threejs },
-];
-
-const itTools = [
-  { name: "AWS", icon: aws },
-  { name: "Ubuntu", icon: ubuntu },
-  { name: "PowerShell", icon: powershell },
-  // { name: "Azure", icon: azure },
-  // { name: "Cisco", icon: cisco },
-  // { name: "ConnectWise", icon: connectwise },
-  { name: "VirtualBox", icon: virtualbox },
-  { name: "Kali Linux", icon: kalilinux },
-  { name: "Wireshark", icon: wireshark },
-  { name: "Nmap", icon: nmap },
-  { name: "John the Ripper", icon: johntheripper },
-];
-
-const contentProduction = [
-  { name: "Photoshop", icon: photoshop },
-  { name: "Premiere Pro", icon: premiere },
+const techCategories = [
+  {
+    id: "build",
+    label: "Product engineering",
+    blurb: "React, Three.js, Tailwind, databases",
+    accent: "from-sky-500 to-violet-500",
+    items: technologies,
+  },
+  {
+    id: "infra",
+    label: "Infra & cloud",
+    blurb: "AWS, Linux, automation, observability",
+    accent: "from-emerald-400 to-teal-400",
+    items: itTools,
+  },
+  {
+    id: "security",
+    label: "Security & R&D",
+    blurb: "Offensive tooling & network analysis",
+    accent: "from-amber-400 to-rose-500",
+    items: cybersecurityTools,
+  },
+  {
+    id: "creative",
+    label: "Creative lab",
+    blurb: "Visual storytelling & motion",
+    accent: "from-pink-500 to-indigo-500",
+    items: designTools,
+  },
 ];
 
 const Tech = () => {
-  const [rows, setRows] = useState({
-    programming: [],
-    itTools: [],
-    contentProduction: [],
-  });
+  const [activeCategory, setActiveCategory] = useState(techCategories[0].id);
 
-  const ref = useRef(null);
-  const isInView = useInView(ref, { 
-    once: true,
-    amount: 0.2
-  });
-  const mainControls = useAnimation();
+  const activeItems = useMemo(() => {
+    const found = techCategories.find((cat) => cat.id === activeCategory);
+    return found?.items ?? [];
+  }, [activeCategory]);
 
-  useEffect(() => {
-    if (isInView) {
-      mainControls.start("visible");
-    }
-  }, [isInView, mainControls]);
-
-  const calculateRows = (width, techArray) => {
-    let dynamicRows = [];
-    let startIndex = 0;
-    let rowSize = 6;
-
-    if (width < 500) {
-      dynamicRows = [
-        techArray.slice(0, 3),
-        techArray.slice(3, 5),
-        techArray.slice(5, 8),
-        techArray.slice(8, 10),
-      ];
-    } else {
-      while (startIndex < techArray.length) {
-        const endIndex = startIndex + rowSize;
-        dynamicRows.push(techArray.slice(startIndex, endIndex));
-        startIndex += rowSize;
-        rowSize = rowSize === 6 ? 5 : 6;
-      }
-    }
-
-    return dynamicRows;
-  };
-
-  useEffect(() => {
-    const calculateRowsForAllCategories = () => {
-      const rowsData = {
-        programming: calculateRows(window.innerWidth, programming),
-        itTools: calculateRows(window.innerWidth, itTools),
-        contentProduction: calculateRows(window.innerWidth, contentProduction),
-      };
-      setRows(rowsData);
-    };
-
-    calculateRowsForAllCategories();
-
-    const handleResize = () => {
-      calculateRowsForAllCategories();
-    };
-    window.addEventListener("resize", handleResize);
-
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  const hexagonVariants = {
-    hidden: { opacity: 0, scale: 0.8 },
-    visible: { 
-      opacity: 1, 
-      scale: 1, 
-      transition: { 
-        delay: Math.random() * 1.5, 
-        duration: 0.5, 
-        type: "spring" 
-      } 
-    },
-    hover: {
-      scale: 1.05,
-      zIndex: 2,
-      transition: { duration: 0.3 }
-    }
-  };
-
-  const renderCategory = (categoryName, categoryRows) => (
-    <motion.div
-      key={categoryName}
-      className="category-container"
-      initial="hidden"
-      animate={mainControls}
-      variants={{
-        hidden: { opacity: 0 },
-        visible: { opacity: 1, transition: { staggerChildren: 0.15 } },
-      }}
-    >
-      <motion.h2
-        className="category-title top"
-        variants={{
-          hidden: { opacity: 0, y: -20 },
-          visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
-        }}
-        style={{
-          fontFamily: "'', cursive",
-          fontSize: "26px",
-          background: "linear-gradient(90deg, #915EFF, #00BFFF)",
-          WebkitBackgroundClip: "text",
-          WebkitTextFillColor: "transparent",
-          backgroundClip: "text",
-          textFillColor: "transparent",
-          filter: "drop-shadow(0 0 10px #915EFF)",
-        }}
-      >{`<${categoryName}>`}</motion.h2>
-      <div className="honeycomb-grid">
-        {categoryRows?.map((row, rowIndex) => (
-          <div
-            key={`${categoryName}-row-${rowIndex}`}
-            className={`honeycomb-row ${rowIndex % 2 === 1 ? "staggered-row" : ""}`}
-          >
-            {row.map((tech) => (
-              <motion.div
-                key={tech.name}
-                className="hexagon"
-                variants={hexagonVariants}
-                initial="hidden"
-                animate="visible"
-                whileHover="hover"
-              >
-                <img src={tech.icon} alt={tech.name}  style={{ userSelect: "none" }} draggable="false"/>
-              </motion.div>
-            ))}
-          </div>
-        ))}
-      </div>
-      <motion.h2
-        className="category-title bottom"
-        variants={{
-          hidden: { opacity: 0, y: 20 },
-          visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
-        }}
-        style={{
-          fontFamily: "'', cursive",
-          fontSize: "26px",
-          background: "linear-gradient(90deg, #915EFF, #00BFFF)",
-          WebkitBackgroundClip: "text",
-          WebkitTextFillColor: "transparent",
-          backgroundClip: "text",
-          textFillColor: "transparent",
-          filter: "drop-shadow(0 0 10px #915EFF)",
-        }}
-      >{`</${categoryName}>`}</motion.h2>
-    </motion.div>
-  );
+  const activeMeta =
+    techCategories.find((cat) => cat.id === activeCategory) ?? techCategories[0];
 
   return (
-    <section className="skills" ref={ref}>
-      <div className="container">
-        <motion.div variants={textVariant()}>
-          <p className={`${styles.sectionSubText} text-center`}>Technical Proficiencies</p>
-          <h2 className={`${styles.sectionHeadText} text-center`}>Skills.</h2>
-        </motion.div>
-        {renderCategory("programming", rows.programming)}
-        {renderCategory("itTools", rows.itTools)}
-        {renderCategory("contentProduction", rows.contentProduction)}
+    <section>
+      <motion.p
+        initial={{ opacity: 0, y: 10 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.4 }}
+        className={`${styles.sectionSubText} text-center`}
+      >
+        Stack evolution
+      </motion.p>
+      <motion.h2
+        initial={{ opacity: 0, y: 10 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.4, delay: 0.1 }}
+        className={`${styles.sectionHeadText} text-center`}
+      >
+        Toolbox
+      </motion.h2>
+      <p className="mx-auto mt-4 max-w-2xl text-center text-sm text-slate-400">
+        A rotating mix of languages, frameworks, and platforms that help me move
+        from sketch to production quickly—without compromising reliability or
+        joy.
+      </p>
+
+      <div className="mt-8 flex flex-wrap justify-center gap-4">
+        {techCategories.map((category) => (
+          <button
+            key={category.id}
+            type="button"
+            onClick={() => setActiveCategory(category.id)}
+            className={`rounded-2xl border px-5 py-3 text-sm font-semibold transition ${
+              activeCategory === category.id
+                ? "border-transparent bg-gradient-to-r text-white " +
+                  category.accent
+                : "border-white/15 bg-white/5 text-slate-300 hover:border-white/30"
+            }`}
+          >
+            {category.label}
+          </button>
+        ))}
       </div>
+      <p className="mt-4 text-center text-xs uppercase tracking-[0.5em] text-slate-400">
+        {activeMeta.blurb}
+      </p>
+
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5 }}
+        className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4"
+      >
+        {activeItems.map((skill) => (
+          <div
+            key={skill.name}
+            className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-4 text-white/90 shadow-[0_15px_40px_rgba(2,6,23,0.4)] transition hover:border-white/40"
+          >
+            <img
+              src={skill.icon}
+              alt={skill.name}
+              className="h-10 w-10 object-contain"
+              loading="lazy"
+            />
+            <p className="text-sm font-semibold">{skill.name}</p>
+          </div>
+        ))}
+      </motion.div>
     </section>
   );
 };

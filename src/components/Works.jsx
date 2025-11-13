@@ -1,136 +1,98 @@
-import React, { useRef, useEffect } from "react";
-import { Tilt } from "react-tilt";
-import { motion, useAnimation, useInView } from "framer-motion";
+import React from "react";
+import { motion } from "framer-motion";
 
 import { styles } from "../styles";
-import { github } from "../assets";
 import { SectionWrapper } from "../hoc";
 import { projects } from "../constants";
-import { fadeIn } from "../utils/motion";
+import { github } from "../assets";
 
-const ProjectCard = ({
-                             name,
-                             description,
-                             tags,
-                             image,
-                             source_code_link,
-                             live_project_link,
-                             animate,
-}) => {
-  return (
-    <motion.div variants={animate}>
-      <Tilt
-        options={{
-          max: 45,
-          scale: 1,
-          speed: 450,
-        }}
-        className="bg-tertiary p-5 rounded-2xl sm:w-[360px] w-full"
-      >
-        <div className="relative w-full h-[230px]">
-          <img
-            src={image}
-            alt="project_image"
-            className="w-full h-full object-cover rounded-2xl"
-          />
-
-          <div className="absolute inset-0 flex justify-end m-3 card-img_hover">
-            <div
-              onClick={() => window.open(source_code_link, "_blank")}
-              className="black-gradient w-10 h-10 rounded-full flex justify-center items-center cursor-pointer transition-all duration-300 hover:shadow-[0_0_10px_rgba(128,0,128,0.7)]"
-            >
-              <img
-                src={github}
-                alt="source code"
-                className="w-1/2 h-1/2 object-contain"
-              />
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-5">
-          <h3 className="text-white font-bold text-[24px]">{name}</h3>
-          <p className="mt-2 text-secondary text-[14px]">{description}</p>
-        </div>
-
-        <div className="mt-4 flex flex-wrap gap-2">
-          {tags.map((tag, index) => (
-            <p key={index} className={`text-[14px] ${tag.color}`}>
-              #{tag.name}
-            </p>
-          ))}
-        </div>
-
-        {live_project_link && (
-          <a href={live_project_link} target="_blank" rel="noopener noreferrer">
-            <button className="mt-3 bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-md font-medium transition-all duration-300 hover:shadow-[0_0_10px_rgba(128,0,128,0.7)]">
-              Live Project
-            </button>
-          </a>
+const ProjectCard = ({ project, index }) => (
+  <motion.article
+    initial={{ opacity: 0, y: 40 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true }}
+    transition={{ duration: 0.5, delay: index * 0.1 }}
+    className="glass-panel flex flex-col rounded-3xl border border-white/10 bg-white/5 p-5"
+  >
+    <div className="relative h-60 w-full overflow-hidden rounded-2xl border border-white/10">
+      <img
+        src={project.image}
+        alt={project.name}
+        className="h-full w-full object-cover transition duration-500 hover:scale-105"
+        loading="lazy"
+      />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-slate-900/10 to-slate-950/80" />
+      <div className="absolute bottom-4 left-4 right-4 flex flex-wrap gap-2">
+        {project.tags.slice(0, 3).map((tag) => (
+          <span
+            key={`${project.name}-${tag.name}`}
+            className="rounded-full border border-white/20 bg-black/30 px-3 py-1 text-xs text-white"
+          >
+            #{tag.name}
+          </span>
+        ))}
+      </div>
+    </div>
+    <div className="mt-6 flex flex-col gap-3">
+      <div>
+        <h3 className="text-2xl font-semibold text-white">{project.name}</h3>
+        <p className="mt-2 text-sm text-slate-300">{project.description}</p>
+      </div>
+      <div className="flex flex-wrap gap-3">
+        {project.live_project_link && (
+          <button
+            type="button"
+            onClick={() => window.open(project.live_project_link, "_blank")}
+            className="inline-flex flex-1 items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-sky-500 to-violet-500 px-4 py-2 text-sm font-semibold text-white transition hover:translate-y-0.5"
+          >
+            View Live
+            <span aria-hidden="true">↗</span>
+          </button>
         )}
-      </Tilt>
-    </motion.div>
-  );
-};
+        <button
+          type="button"
+          onClick={() => window.open(project.source_code_link, "_blank")}
+          className="inline-flex flex-1 items-center justify-center gap-2 rounded-2xl border border-white/20 px-4 py-2 text-sm font-semibold text-white/90 transition hover:border-white/40"
+        >
+          <img src={github} alt="GitHub" className="h-5 w-5" />
+          Source
+        </button>
+      </div>
+    </div>
+  </motion.article>
+);
 
 const Works = () => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "0px 0px -200px 0px" }); // Adjust amount as needed
-  const mainControls = useAnimation();
-
-  useEffect(() => {
-    if (isInView) {
-      mainControls.start("visible");
-    }
-  }, [isInView, mainControls]);
-
   return (
-    <section ref={ref}>
-      <motion.div
-        initial="hidden"
-        animate={mainControls}
-        variants={{
-          hidden: { opacity: 0, y: -20 },
-          visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
-        }}
+    <section>
+      <motion.p
+        initial={{ opacity: 0, y: 10 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.4 }}
+        className={`${styles.sectionSubText} text-center`}
       >
-        <h3 className={`${styles.sectionSubText} text-center`}>
-          Innovative Creations
-        </h3>
-      </motion.div>
-
-      <motion.div
-        initial="hidden"
-        animate={mainControls}
-        variants={{
-          hidden: { opacity: 0, y: -20 },
-          visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
-        }}
+        Selected builds
+      </motion.p>
+      <motion.h2
+        initial={{ opacity: 0, y: 10 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.4, delay: 0.1 }}
+        className={`${styles.sectionHeadText} text-center`}
       >
-        <h3 className={`${styles.sectionHeadText} text-center`}>Projects.</h3>
-      </motion.div>
+        Projects
+      </motion.h2>
+      <p className="mx-auto mt-4 max-w-3xl text-center text-sm text-slate-400">
+        A handful of experiments, internal tools, and public experiences that
+        explore automation, reactive UI, and playful data stories.
+      </p>
 
-      <motion.div>
-        <div
-          className={`${
-            window.innerWidth <= 768
-              ? "grid grid-cols-1 gap-4 place-items-center"
-              : "flex flex-wrap gap-7"
-          }`}
-        >
-          {projects.map((project, index) => (
-            <ProjectCard
-              key={`project-${index}`}
-              animate={
-                window.innerWidth <= 768
-                  ? {}
-                  : fadeIn("up", "spring", index * 0.5, 0.75)
-              }
-              {...project}
-            />
-          ))}
-        </div>
-      </motion.div>
+      <div className="mt-12 grid gap-8 md:grid-cols-2">
+        {projects.map((project, index) => (
+          <ProjectCard key={project.name} project={project} index={index} />
+        ))}
+      </div>
     </section>
   );
 };

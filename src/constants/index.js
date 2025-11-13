@@ -50,6 +50,7 @@ import {
   enterpriseapitester,
   github,
   mongodb,
+  docker,
 } from "../assets";
 
 export const navLinks = [
@@ -176,7 +177,7 @@ const technologies = [
     name: "HTML 5",
     icon: html,
   },
-    {
+  {
     name: "Tailwind CSS",
     icon: tailwind,
   }, 
@@ -185,11 +186,19 @@ const technologies = [
     icon: reactjs,
   },
   {
+    name: "React Native (Expo)",
+    icon: mobile,
+  },
+  {
+    name: "React Native CLI",
+    icon: mobile,
+  },
+  {
     name: "Typescript",
     icon: typescript,
   },
   {
-    name: "AWS",
+    name: "AWS (Lambda & ECS)",
     icon: aws,
   },
 ];
@@ -210,6 +219,22 @@ const itTools = [
   {
     name: "VirtualBox",
     icon: virtualbox,
+  },
+  {
+    name: "AWS ECS",
+    icon: aws,
+  },
+  {
+    name: "GitHub Actions",
+    icon: github,
+  },
+  {
+    name: "Docker",
+    icon: docker,
+  },
+  {
+    name: "Expo CLI",
+    icon: mobile,
   },
 ];
 

@@ -1,173 +1,142 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 import { styles } from "../styles";
 import { navLinks } from "../constants";
-import { logo } from "../assets";
 
 const Navbar = () => {
   const [active, setActive] = useState("");
-  const [toggle, setToggle] = useState(false);
+  const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.scrollY;
-      if (scrollTop > 100) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-
-    return () => window.removeEventListener("scroll", handleScroll);
+    const onScroll = () => setScrolled(window.scrollY > 80);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Styling for the menu button and navicon
-  const menuIconStyle = {
-    position: 'relative',
-    width: '28px',
-    height: '20px',
-    display: 'flex',
-    justifyContent: 'center',
-    cursor: 'pointer',
-    flexDirection: 'column',
-    alignItems: 'center',
-  };
+  useEffect(() => {
+    if (!open) return;
+    const onResize = () => {
+      if (window.innerWidth > 768) {
+        setOpen(false);
+      }
+    };
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, [open]);
 
-  const barCommonStyle = {
-    background: 'white',
-    display: 'block',
-    height: '2px',
-    width: '18px',
-    borderRadius: '2px',
-    position: 'absolute',
-    transition: 'all 0.2s ease-out',
-  };
-
-  const topBarStyle = {
-    ...barCommonStyle,
-    top: toggle ? '50%' : '5px',
-    transform: toggle ? 'rotate(-45deg)' : 'none',
-  };
-
-  const middleBarStyle = {
-    ...barCommonStyle,
-    opacity: toggle ? 0 : 1,
-    top: '50%',
-    transition: 'opacity 0.2s ease-out',
-  };
-
-  const bottomBarStyle = {
-    ...barCommonStyle,
-    top: toggle ? '50%' : '15px',
-    transform: toggle ? 'rotate(45deg)' : 'none',
-  };
+  const menuItems = (
+    <ul className="flex flex-col md:flex-row gap-6 text-sm font-semibold tracking-wide">
+      {navLinks.map((nav) => (
+        <li key={nav.id}>
+          <a
+            href={`#${nav.id}`}
+            className={`transition-colors duration-200 ${
+              active === nav.title ? "text-white" : "text-slate-300"
+            } hover:text-white`}
+            onClick={() => {
+              setActive(nav.title);
+              setOpen(false);
+            }}
+          >
+            {nav.title}
+          </a>
+        </li>
+      ))}
+    </ul>
+  );
 
   return (
     <nav
-      className={`${
-        styles.paddingX
-      } w-full flex items-center py-5 fixed top-0 z-20 transition-all duration-300 ${
-        scrolled ? "bg-primary shadow-lg" : "bg-transparent"
-      }`}
+      className={`${styles.paddingX} fixed top-0 left-0 right-0 py-6 z-30 transition-all duration-500`}
     >
-      <div className='w-full flex justify-between items-center max-w-7xl mx-auto'>
+      <div
+        className={`mx-auto flex max-w-6xl items-center justify-between rounded-full border px-6 py-3 backdrop-blur-xl transition-all duration-500 ${
+          scrolled
+            ? "bg-slate-950/80 border-white/10 shadow-[0_20px_120px_rgba(6,182,212,0.15)]"
+            : "bg-white/5 border-white/10"
+        }`}
+      >
         <Link
-          to='/'
-          className='flex items-center gap-2'
+          to="/"
+          className="flex items-center gap-4"
           onClick={() => {
             setActive("");
-            window.scrollTo(0, 0);
+            window.scrollTo({ top: 0, behavior: "smooth" });
           }}
         >
-          <img src={logo} alt='logo' className='w-12 h-12 object-contain' />
-          <motion.p 
-            className='text-white text-[18px] font-bold cursor-pointer flex items-center'
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <span 
-              className='block' 
-              style={{
-                fontFamily: "'Dancing Script', cursive",
-                fontSize: "26px",
-                background: "linear-gradient(90deg, #915EFF, #00BFFF)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-                textFillColor: "transparent",
-              }} 
-            >
-              {"</"}Ankit Chaudhary{">"}
-            </span>
-          </motion.p>
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-sky-400 text-lg font-bold text-white shadow-lg shadow-sky-500/30">
+            AC
+          </div>
+          <div className="leading-tight">
+            <p className="text-xs uppercase tracking-[0.5em] text-slate-400">
+              Portfolio
+            </p>
+            <p className="text-lg font-semibold text-white">
+              Ankit Chaudhary
+            </p>
+          </div>
         </Link>
 
-        <ul className='list-none hidden sm:flex flex-row gap-10'>
-          {navLinks.map((nav) => (
-            <motion.li
-              key={nav.id}
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: nav.id * 0.1 }}
-            >
-              <a
-                href={`#${nav.id}`}
-                className={`${
-                  active === nav.title ? "text-white" : "text-secondary"
-                } hover:text-white text-[18px] font-medium cursor-pointer transition-colors duration-300`}
-                onClick={() => setActive(nav.title)}
-              >
-                {nav.title}
-              </a>
-            </motion.li>
-          ))}
-        </ul>
-
-        <div className='sm:hidden flex flex-1 justify-end items-center'>
-          {/* Menu Icon Toggle */}
-          <div style={menuIconStyle} onClick={() => setToggle(!toggle)}>
-            <span style={topBarStyle}></span>
-            <span style={middleBarStyle}></span>
-            <span style={bottomBarStyle}></span>
-          </div>
-
-          {/* Menu Items */}
-          <motion.div
-            className={`${
-              !toggle ? "hidden" : "flex"
-            } p-6 black-gradient absolute top-20 right-0 mx-4 my-2 min-w-[140px] z-10 rounded-xl`}
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: toggle ? 1 : 0, scale: toggle ? 1 : 0.95 }}
-            transition={{ duration: 0.2 }}
+        <div className="hidden flex-1 items-center justify-end gap-8 md:flex">
+          {menuItems}
+          <a
+            href="#contact"
+            className="inline-flex items-center gap-2 rounded-full bg-white/90 px-5 py-2 text-sm font-semibold text-slate-900 transition hover:bg-white"
           >
-            <ul className='list-none flex justify-end items-start flex-1 flex-col gap-4'>
-              {navLinks.map((nav) => (
-                <motion.li
-                  key={nav.id}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.3, delay: nav.id * 0.1 }}
-                  className={`font-poppins font-medium cursor-pointer text-[16px] ${
-                    active === nav.title ? "text-white" : "text-secondary"
-                  }`}
-                  onClick={() => {
-                    setToggle(!toggle);
-                    setActive(nav.title);
-                  }}
-                >
-                  <a href={`#${nav.id}`}>{nav.title}</a>
-                </motion.li>
-              ))}
-            </ul>
-          </motion.div>
+            Let&apos;s talk
+            <span aria-hidden="true">↗</span>
+          </a>
         </div>
+
+        <button
+          aria-label="Toggle navigation menu"
+          className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/15 text-white md:hidden"
+          onClick={() => setOpen((prev) => !prev)}
+        >
+          <div className="space-y-1.5">
+            <span
+              className={`block h-0.5 w-6 bg-current transition ${
+                open ? "translate-y-2 rotate-45" : ""
+              }`}
+            />
+            <span
+              className={`block h-0.5 w-6 bg-current transition ${
+                open ? "opacity-0" : ""
+              }`}
+            />
+            <span
+              className={`block h-0.5 w-6 bg-current transition ${
+                open ? "-translate-y-2 -rotate-45" : ""
+              }`}
+            />
+          </div>
+        </button>
       </div>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="md:hidden"
+          >
+            <div className="mx-auto mt-4 max-w-6xl rounded-3xl border border-white/10 bg-slate-950/80 px-6 py-5 backdrop-blur-2xl">
+              {menuItems}
+              <a
+                href="#contact"
+                className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-sky-500 to-violet-500 px-5 py-3 text-sm font-semibold text-white"
+                onClick={() => setOpen(false)}
+              >
+                Start a project
+              </a>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 };
