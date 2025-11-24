@@ -16,6 +16,11 @@ import Contact from "./Contact";
 import Terminal from "./Terminal";
 import Assistant from "./Assistant";
 import CanvasLoader from "./Loader";
+import CursorTrail from "./CursorTrail";
+import ScrollProgress, { ScrollToTop } from "./ScrollProgress";
+import ParticleBackground from "./ParticleBackground";
+import StatsCounter from "./StatsCounter";
+import FloatingIcons from "./FloatingIcons";
 
 export {
   Hero,
@@ -34,4 +39,15 @@ export {
   BallCanvas,
   ComputersCanvas,
   StarsCanvas,
+  CursorTrail,
+  ScrollProgress,
+  ScrollToTop,
+  ParticleBackground,
+  StatsCounter,
+  FloatingIcons,
 };
+
+export { default as MagneticButton } from "./MagneticButton";
+export { default as SmoothScroll } from "./SmoothScroll";
+export { default as RevealOnScroll } from "./RevealOnScroll";
+export { default as GlowCard } from "./GlowCard";

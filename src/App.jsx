@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import { BrowserRouter } from "react-router-dom";
+import { AnimatePresence } from "framer-motion";
 import {
   About,
   Contact,
@@ -15,29 +16,70 @@ import {
   Assistant,
   StarsCanvas,
 } from "./components";
+import CursorTrail from "./components/CursorTrail";
+import ScrollProgress, { ScrollToTop } from "./components/ScrollProgress";
+import ParticleBackground from "./components/ParticleBackground";
+import { PageLoader } from "./components/Loader";
+import ThemeToggle from "./components/ThemeToggle";
+import SmoothScroll from "./components/SmoothScroll";
+import BackgroundBeams from "./components/BackgroundBeams";
+import CommandPalette from "./components/CommandPalette";
+import FloatingActionButton from "./components/FloatingActionButton";
+import SpotlightEffect from "./components/SpotlightEffect";
+import MouseFollower from "./components/MouseFollower";
+import GridPattern from "./components/GridPattern";
 
 function App() {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <BrowserRouter>
-      <div className="app-shell">
-        <div className="aurora aurora--violet -top-32 -left-24" />
-        <div className="aurora aurora--cyan top-1/3 -right-10" />
-        <div className="aurora aurora--pink bottom-0 left-1/4" />
-        <StarsCanvas />
-        <Navbar />
-        <main className="relative z-10 flex flex-col gap-6">
-          <Hero />
-          <About />
-          <Education />
-          <Experience />
-          <Terminal />
-          <Extracurricular />
-          <Tech />
-          <Works />
-          <Contact />
-        </main>
-        <Assistant />
-      </div>
+      <AnimatePresence mode="wait">
+        {loading ? (
+          <PageLoader key="loader" />
+        ) : (
+          <div className="app-shell" key="app">
+            <div className="noise-overlay" />
+            <SmoothScroll />
+            <CursorTrail />
+            <ScrollProgress />
+            <ScrollToTop />
+            <ThemeToggle />
+            <CommandPalette />
+            <FloatingActionButton />
+            <SpotlightEffect />
+            <MouseFollower />
+            <GridPattern />
+            <BackgroundBeams />
+            <ParticleBackground />
+            <div className="aurora aurora--violet -top-32 -left-24" />
+            <div className="aurora aurora--cyan top-1/3 -right-10" />
+            <div className="aurora aurora--pink bottom-0 left-1/4" />
+            <StarsCanvas />
+            <Navbar />
+            <main className="relative z-10 flex flex-col gap-6">
+              <Hero />
+              <About />
+              <Education />
+              <Experience />
+              <Terminal />
+              <Extracurricular />
+              <Tech />
+              <Works />
+              <Contact />
+            </main>
+            <Assistant />
+          </div>
+        )}
+      </AnimatePresence>
     </BrowserRouter>
   );
 }

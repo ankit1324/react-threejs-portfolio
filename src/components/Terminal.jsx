@@ -392,7 +392,7 @@ const Terminal = () => {
         DevOps notes—even ask Gemini (free tier) via <code>/ai</code>.
       </p>
 
-      <div className="mt-10 grid gap-8 lg:grid-cols-[1.25fr_0.75fr]">
+      <div className="mt-10 grid gap-8 lg:grid-cols-[1.4fr_0.6fr]">
         <div className="glass-panel overflow-hidden rounded-[26px] border border-white/10 bg-gradient-to-b from-[#040716] to-[#090f29]">
           <div className="flex items-center gap-2 border-b border-white/10 px-5 py-3">
             <span className="h-3 w-3 rounded-full bg-rose-400" />
@@ -405,7 +405,7 @@ const Terminal = () => {
 
           <div
             ref={scrollRef}
-            className="max-h-[360px] space-y-4 overflow-y-auto px-5 py-6 font-mono text-sm text-slate-200"
+            className="max-h-[480px] space-y-4 overflow-y-auto px-5 py-6 font-mono text-sm text-slate-200"
           >
             {history.map((entry) =>
               entry.isSystem ? (
@@ -453,58 +453,34 @@ const Terminal = () => {
               placeholder={`/help • try ${placeholderCommands}`}
               className="min-w-[140px] flex-1 bg-transparent text-slate-100 placeholder:text-slate-600 focus:outline-none"
               autoComplete="off"
-              autoFocus
             />
           </form>
         </div>
 
-        <div className="space-y-6">
-          <div className="glass-panel border border-white/10 p-6">
-            <p className="text-xs uppercase tracking-[0.4em] text-slate-400">
-              Quick facts
-            </p>
-            <div className="mt-4 grid gap-4 sm:grid-cols-2">
-              {quickFacts.map((fact) => (
-                <div
-                  key={fact.label}
-                  className="rounded-2xl border border-white/10 bg-white/5 p-4"
-                >
-                  <p className="text-[0.7rem] uppercase tracking-[0.35em] text-slate-500">
-                    {fact.label}
-                  </p>
-                  <p className="mt-2 text-lg font-semibold text-white">
-                    {fact.value}
-                  </p>
-                  <p className="text-xs text-slate-400">{fact.detail}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="glass-panel border border-white/10 px-6 py-5">
-            <p className="text-xs uppercase tracking-[0.4em] text-slate-400">
-              Aliases I keep handy
-            </p>
-            <div className="mt-4 space-y-3 font-mono text-xs text-slate-300">
-              <p>
-                alias deploy-web="
-                <span className="text-sky-300">
-                  pnpm build && aws s3 sync dist s3://ankit.cloud
-                </span>
-                "
-              </p>
-              <p>
-                alias vibe-check="
-                <span className="text-sky-300">
-                  npm run lint && npm run test -- --watch=false
-                </span>
-                "
-              </p>
-              <p>
-                alias studio="
-                <span className="text-sky-300">npm run dev -- --host</span>"
-              </p>
-            </div>
+        <div className="glass-panel border border-white/10 p-6">
+          <p className="text-xs uppercase tracking-[0.4em] text-slate-400">
+            Quick facts
+          </p>
+          <div className="mt-4 grid gap-4 sm:grid-cols-2">
+            {quickFacts.map((fact) => (
+              <motion.div
+                key={fact.label}
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                whileHover={{ scale: 1.05, y: -5 }}
+                transition={{ duration: 0.3 }}
+                className="group rounded-2xl border border-white/10 bg-white/5 p-4 transition-all hover:border-sky-400/50 hover:bg-sky-400/5 hover:shadow-[0_10px_30px_rgba(56,189,248,0.2)]"
+              >
+                <p className="text-[0.7rem] uppercase tracking-[0.35em] text-slate-500">
+                  {fact.label}
+                </p>
+                <p className="mt-2 text-lg font-semibold text-white group-hover:text-sky-400 transition-colors">
+                  {fact.value}
+                </p>
+                <p className="text-xs text-slate-400">{fact.detail}</p>
+              </motion.div>
+            ))}
           </div>
         </div>
       </div>

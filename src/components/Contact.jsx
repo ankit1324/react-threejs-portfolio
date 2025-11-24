@@ -161,13 +161,37 @@ const Contact = () => {
                 className="mt-2 rounded-3xl border border-white/10 bg-white/5 px-4 py-4 text-base text-white placeholder:text-slate-500 focus:border-sky-400 focus:outline-none"
               />
             </label>
-            <button
+            <motion.button
               type="submit"
               disabled={loading}
-              className="inline-flex w-full items-center justify-center gap-2 rounded-3xl bg-gradient-to-r from-sky-500 to-violet-500 px-6 py-4 text-sm font-semibold text-white shadow-lg shadow-sky-500/30 transition hover:translate-y-0.5 disabled:opacity-60"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="inline-flex w-full items-center justify-center gap-2 rounded-3xl bg-gradient-to-r from-sky-500 to-violet-500 px-6 py-4 text-sm font-semibold text-white shadow-lg shadow-sky-500/30 transition disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              {loading ? "Sending..." : sent ? "Delivered — talk soon!" : "Send message"}
-            </button>
+              {loading ? (
+                <>
+                  <motion.span
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                    className="inline-block h-4 w-4 rounded-full border-2 border-white border-t-transparent"
+                  />
+                  Sending...
+                </>
+              ) : sent ? (
+                <>
+                  <motion.span
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: "spring" }}
+                  >
+                    ✓
+                  </motion.span>
+                  Delivered — talk soon!
+                </>
+              ) : (
+                "Send message"
+              )}
+            </motion.button>
           </form>
         </motion.div>
 

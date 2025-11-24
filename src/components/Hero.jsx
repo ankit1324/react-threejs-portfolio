@@ -5,6 +5,7 @@ import { styles } from "../styles";
 import { ComputersCanvas } from "./canvas";
 import { experiences, extracurricular, projects } from "../constants";
 import { resume } from "../assets";
+import MagneticButton from "./MagneticButton";
 
 const heroPhrases = [
   "software engineer",
@@ -83,13 +84,21 @@ const Hero = () => {
           transition={{ duration: 0.8 }}
           className="space-y-8"
         >
-          <div className="flex flex-wrap items-center gap-3 text-xs uppercase tracking-[0.55em] text-slate-400">
-            <span className="rounded-full border border-white/15 bg-white/5 px-4 py-2 font-semibold text-slate-200">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="flex flex-wrap items-center gap-3 text-xs uppercase tracking-[0.55em] text-slate-400"
+          >
+            <motion.span
+              whileHover={{ scale: 1.05 }}
+              className="rounded-full border border-white/15 bg-white/5 px-4 py-2 font-semibold text-slate-200 transition-all hover:border-sky-400/50 hover:bg-sky-400/10"
+            >
               Calm Interfaces
-            </span>
+            </motion.span>
             <span>•</span>
             <span>Realtime Workflows</span>
-          </div>
+          </motion.div>
           <div className="space-y-6">
             <h1 className={`${styles.heroHeadText}`}>
               Building{" "}
@@ -116,33 +125,53 @@ const Hero = () => {
             </div>
           </div>
           <div className="flex flex-wrap gap-4">
-            <a
-              href="#projects"
-              className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-sky-500 to-violet-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-sky-500/30 transition hover:translate-y-0.5"
+            <MagneticButton
+              onClick={() => document.querySelector("#projects").scrollIntoView({ behavior: "smooth" })}
+              className="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-sky-500 to-violet-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-sky-500/30 transition-all hover:shadow-sky-500/50"
             >
-              See selected work
-              <span aria-hidden="true">↗</span>
-            </a>
-            <button
+              <span className="relative z-10 flex items-center gap-2">
+                See selected work
+                <motion.span
+                  animate={{ x: [0, 3, 0] }}
+                  transition={{ duration: 1.5, repeat: Infinity }}
+                  aria-hidden="true"
+                >
+                  →
+                </motion.span>
+              </span>
+              <div className="absolute inset-0 -z-0 bg-gradient-to-r from-violet-500 to-pink-500 opacity-0 transition-opacity group-hover:opacity-100" />
+            </MagneticButton>
+            <MagneticButton
               type="button"
               onClick={() => window.open(resume, "_blank")}
-              className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/20 px-6 py-3 text-sm font-semibold text-white/90 transition hover:border-white/40"
+              className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/20 bg-white/5 px-6 py-3 text-sm font-semibold text-white/90 backdrop-blur-sm transition-all hover:border-sky-400/50 hover:bg-sky-400/10 hover:shadow-[0_0_30px_rgba(56,189,248,0.3)]"
             >
               Download resume
-            </button>
+            </MagneticButton>
           </div>
           <div className="grid gap-4 sm:grid-cols-3">
-            {heroStats.map((stat) => (
-              <div
+            {heroStats.map((stat, index) => (
+              <motion.div
                 key={stat.label}
-                className="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-[0_25px_60px_rgba(2,6,23,0.35)]"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.8 + index * 0.1 }}
+                whileHover={{ y: -5, transition: { duration: 0.2 } }}
+                className="group rounded-2xl border border-white/10 bg-white/5 p-4 shadow-[0_25px_60px_rgba(2,6,23,0.35)] transition-all hover:border-sky-400/50 hover:shadow-[0_25px_60px_rgba(56,189,248,0.25)]"
               >
-                <p className="text-3xl font-semibold text-white">{stat.value}</p>
+                <motion.p
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ duration: 0.5, delay: 1 + index * 0.1, type: "spring" }}
+                  className="text-3xl font-semibold text-white group-hover:text-sky-400 transition-colors"
+                >
+                  {stat.value}
+                </motion.p>
                 <p className="mt-1 text-xs uppercase tracking-[0.4em] text-slate-400">
                   {stat.label}
                 </p>
                 <p className="mt-2 text-sm text-slate-300">{stat.detail}</p>
-              </div>
+              </motion.div>
             ))}
           </div>
         </motion.div>

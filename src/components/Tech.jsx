@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 import { styles } from "../styles";
 import { SectionWrapper } from "../hoc";
@@ -100,25 +100,34 @@ const Tech = () => {
       </p>
 
       <motion.div
+        key={activeCategory}
         initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -30 }}
         transition={{ duration: 0.5 }}
         className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4"
       >
-        {activeItems.map((skill) => (
-          <div
+        {activeItems.map((skill, index) => (
+          <motion.div
             key={skill.name}
-            className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-4 text-white/90 shadow-[0_15px_40px_rgba(2,6,23,0.4)] transition hover:border-white/40"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3, delay: index * 0.05 }}
+            whileHover={{ scale: 1.05, y: -5 }}
+            className="group flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-4 text-white/90 shadow-[0_15px_40px_rgba(2,6,23,0.4)] transition-all hover:border-sky-400/50 hover:bg-sky-400/5 hover:shadow-[0_15px_40px_rgba(56,189,248,0.3)]"
           >
-            <img
+            <motion.img
               src={skill.icon}
               alt={skill.name}
               className="h-10 w-10 object-contain"
               loading="lazy"
+              whileHover={{ rotate: [0, -10, 10, -10, 0] }}
+              transition={{ duration: 0.5 }}
             />
-            <p className="text-sm font-semibold">{skill.name}</p>
-          </div>
+            <p className="text-sm font-semibold group-hover:text-sky-400 transition-colors">
+              {skill.name}
+            </p>
+          </motion.div>
         ))}
       </motion.div>
     </section>

@@ -4,11 +4,13 @@ import { motion, AnimatePresence } from "framer-motion";
 
 import { styles } from "../styles";
 import { navLinks } from "../constants";
+import { useScrollDirection } from "../hooks/useScrollDirection";
 
 const Navbar = () => {
   const [active, setActive] = useState("");
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const scrollDirection = useScrollDirection();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 80);
@@ -49,7 +51,10 @@ const Navbar = () => {
   );
 
   return (
-    <nav
+    <motion.nav
+      initial={{ y: 0 }}
+      animate={{ y: scrollDirection === "down" && scrolled ? -100 : 0 }}
+      transition={{ duration: 0.3 }}
       className={`${styles.paddingX} fixed top-0 left-0 right-0 py-6 z-30 transition-all duration-500`}
     >
       <div
@@ -137,7 +142,7 @@ const Navbar = () => {
           </motion.div>
         )}
       </AnimatePresence>
-    </nav>
+    </motion.nav>
   );
 };
 
