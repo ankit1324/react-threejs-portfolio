@@ -2,7 +2,6 @@ import React from "react";
 import { StarsCanvas } from "./canvas";
 import CursorTrail from "./CursorTrail";
 import ScrollProgress, { ScrollToTop } from "./ScrollProgress";
-import ThemeToggle from "./ThemeToggle";
 import CommandPalette from "./CommandPalette";
 import FloatingActionButton from "./FloatingActionButton";
 import SpotlightEffect from "./SpotlightEffect";
@@ -20,7 +19,6 @@ const BackgroundWrapper = () => {
       <CursorTrail />
       <ScrollProgress />
       <ScrollToTop />
-      <ThemeToggle />
       <CommandPalette />
       <FloatingActionButton />
       <SpotlightEffect />

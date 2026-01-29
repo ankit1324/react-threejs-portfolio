@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import MagneticButton from "./MagneticButton";
+import { resume } from "../assets";
 
 const FloatingActionButton = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -24,7 +25,7 @@ const FloatingActionButton = () => {
     {
       icon: "📄",
       label: "Resume",
-      action: () => window.open("#", "_blank"),
+      action: () => window.open(resume, "_blank"),
     },
   ];
 

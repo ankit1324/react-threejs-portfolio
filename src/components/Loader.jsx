@@ -1,5 +1,6 @@
 import { Html, useProgress } from "@react-three/drei";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useState } from "react";
 
 const CanvasLoader = () => {
   const { progress } = useProgress();
@@ -29,103 +30,124 @@ const CanvasLoader = () => {
   );
 };
 
-export const PageLoader = () => {
+export const PageLoader = ({ onComplete }) => {
+  const labels = ["DEV", "ENGINEER", "ANKIT CHAUDHARY"];
+  const [progress, setProgress] = useState(1);
+  const [labelIndex, setLabelIndex] = useState(-1);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setProgress((value) => {
+        if (value >= 100) return 100;
+        return value + 1;
+      });
+    }, 26);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    if (progress < 100 || labelIndex !== -1) return;
+    const delay = setTimeout(() => setLabelIndex(0), 350);
+    return () => clearTimeout(delay);
+  }, [progress, labelIndex]);
+
+  useEffect(() => {
+    if (labelIndex < 0) return undefined;
+
+    if (labelIndex < labels.length - 1) {
+      const timer = setTimeout(() => {
+        setLabelIndex((value) => value + 1);
+      }, 1200);
+      return () => clearTimeout(timer);
+    }
+
+    const completeTimer = setTimeout(() => {
+      if (typeof onComplete === "function") {
+        onComplete();
+      }
+    }, 1500);
+
+    return () => clearTimeout(completeTimer);
+  }, [labelIndex, labels.length, onComplete]);
+
   return (
     <motion.div
       initial={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.8, ease: "easeInOut" }}
-      className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950"
+      className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-[#030014] text-white"
     >
-      {/* Animated background particles */}
-      <div className="absolute inset-0">
-        {[...Array(20)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute h-1 w-1 rounded-full bg-sky-400"
-            initial={{
-              x: Math.random() * window.innerWidth,
-              y: Math.random() * window.innerHeight,
-              opacity: 0,
-            }}
-            animate={{
-              y: [null, Math.random() * window.innerHeight],
-              opacity: [0, 1, 0],
-            }}
-            transition={{
-              duration: 2 + Math.random() * 2,
-              repeat: Infinity,
-              delay: Math.random() * 2,
-            }}
-          />
-        ))}
-      </div>
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          backgroundImage:
+            "radial-gradient(circle, rgba(248, 250, 252, 0.12) 1px, transparent 1px)",
+          backgroundSize: "16px 16px",
+        }}
+      />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_40%_at_50%_0%,rgba(56,189,248,0.16),transparent_70%)]" />
 
-      <div className="relative text-center">
-        {/* Outer rotating ring */}
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-          className="absolute inset-0 -m-8"
-        >
-          <div className="h-36 w-36 rounded-full border-2 border-transparent border-t-sky-400 border-r-violet-500" />
-        </motion.div>
+      <motion.div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 opacity-60"
+        animate={{ x: ["-120%", "120%"] }}
+        transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut" }}
+        style={{
+          backgroundImage:
+            "linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)",
+        }}
+      />
 
-        {/* Inner rotating ring */}
-        <motion.div
-          animate={{ rotate: -360 }}
-          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-          className="absolute inset-0 -m-4"
-        >
-          <div className="h-28 w-28 rounded-full border-2 border-transparent border-b-pink-500 border-l-violet-500" />
-        </motion.div>
-
-        {/* Center logo */}
-        <motion.div
-          animate={{
-            scale: [1, 1.1, 1],
-            rotate: [0, 5, -5, 0],
-          }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          className="relative z-10 mx-auto mb-8 flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-400 via-violet-500 to-pink-500 shadow-[0_0_50px_rgba(56,189,248,0.5)]"
-        >
-          <span className="text-3xl font-bold text-white">AC</span>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-        >
-          <motion.p
-            animate={{ opacity: [0.5, 1, 0.5] }}
-            transition={{ duration: 1.5, repeat: Infinity }}
-            className="text-lg font-semibold text-white"
-          >
-            Loading experience
-          </motion.p>
-          <motion.div className="mt-4 flex justify-center gap-1">
-            {[0, 1, 2].map((i) => (
-              <motion.div
-                key={i}
-                animate={{
-                  scale: [1, 1.5, 1],
-                  opacity: [0.3, 1, 0.3],
-                }}
-                transition={{
-                  duration: 1,
-                  repeat: Infinity,
-                  delay: i * 0.2,
-                }}
-                className="h-2 w-2 rounded-full bg-sky-400"
-              />
-            ))}
-          </motion.div>
-        </motion.div>
+      <div className="relative z-10 px-6 text-center">
+        <AnimatePresence mode="wait">
+          {labelIndex < 0 ? (
+            <motion.div
+              key="counter"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+              className="flex flex-col items-center"
+            >
+              <div
+                className="font-ndot text-4xl tracking-[0.18em] text-white sm:text-6xl md:text-7xl"
+                style={{ textShadow: "0 0 18px rgba(255,255,255,0.25)" }}
+              >
+                {progress}%
+              </div>
+              <div className="mt-4 text-[0.6rem] uppercase tracking-[0.45em] text-white/70">
+                loading
+              </div>
+            </motion.div>
+          ) : (
+            <motion.div
+              key={`label-${labelIndex}`}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.6, ease: "easeInOut" }}
+              className="flex flex-col items-center"
+            >
+              <div
+                className="font-ndot text-3xl tracking-[0.1em] text-white sm:text-5xl md:text-6xl"
+                style={{ textShadow: "0 0 18px rgba(255,255,255,0.25)" }}
+              >
+                {labels[labelIndex]}
+              </div>
+              <div className="mt-5 flex items-center justify-center gap-2">
+                {[0, 1, 2].map((i) => (
+                  <motion.span
+                    key={i}
+                    className="h-1.5 w-1.5 rounded-full bg-white/70"
+                    animate={{ opacity: [0.2, 0.9, 0.2] }}
+                    transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.2 }}
+                  />
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </motion.div>
   );

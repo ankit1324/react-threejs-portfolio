@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./App.css";
 import { BrowserRouter } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
@@ -20,7 +20,6 @@ import CursorTrail from "./components/CursorTrail";
 import ScrollProgress, { ScrollToTop } from "./components/ScrollProgress";
 import ParticleBackground from "./components/ParticleBackground";
 import { PageLoader } from "./components/Loader";
-import ThemeToggle from "./components/ThemeToggle";
 import SmoothScroll from "./components/SmoothScroll";
 import BackgroundBeams from "./components/BackgroundBeams";
 import CommandPalette from "./components/CommandPalette";
@@ -32,19 +31,11 @@ import GridPattern from "./components/GridPattern";
 function App() {
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
   return (
     <BrowserRouter>
       <AnimatePresence mode="wait">
         {loading ? (
-          <PageLoader key="loader" />
+          <PageLoader key="loader" onComplete={() => setLoading(false)} />
         ) : (
           <div className="app-shell" key="app">
             <div className="noise-overlay" />
@@ -52,7 +43,6 @@ function App() {
             <CursorTrail />
             <ScrollProgress />
             <ScrollToTop />
-            <ThemeToggle />
             <CommandPalette />
             <FloatingActionButton />
             <SpotlightEffect />

@@ -14,8 +14,9 @@ const SmoothScroll = () => {
       if (!element) return;
 
       e.preventDefault();
-      
-      const offsetTop = element.offsetTop - 100; // Account for navbar
+
+      const offsetTop =
+        element.getBoundingClientRect().top + window.scrollY - 100; // Account for navbar
       window.scrollTo({
         top: offsetTop,
         behavior: "smooth",
