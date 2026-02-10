@@ -178,12 +178,69 @@ const aiDelayByTab = {
 };
 
 const generatingResponseText = "Generating response...";
+const AI_CHAT_TAB_ID = "ai-chat";
+const GEMINI_ENDPOINT =
+  "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
+const askAiSystemPrompt = `
+You are Ankit Chaudhary's portfolio assistant.
+Respond in 3-5 concise sentences.
+Anchor replies to Ankit's strengths: React, React Native, TypeScript, Node.js, Three.js, AWS, and delivery-focused engineering.
+If asked about collaboration, suggest contacting through the portfolio contact section or LinkedIn.
+If information is not available in portfolio context, say that clearly and offer a practical next step.
+`;
 
 const fakeThinkingSteps = [
   "Understanding your request",
   "Searching profile context",
   "Crafting the best answer",
 ];
+
+const buildGeminiPrompt = (question, historyMessages = []) => {
+  const recentHistory = historyMessages
+    .slice(-8)
+    .map((message) => {
+      const speaker = message.role === "assistant" ? "Assistant" : "User";
+      return `${speaker}: ${message.text}`;
+    })
+    .join("\n\n");
+
+  return `${askAiSystemPrompt}
+
+${recentHistory ? `Conversation so far:\n${recentHistory}\n\n` : ""}User: ${question}
+Assistant:`;
+};
+
+const fetchAskAiResponse = async (apiKey, question, historyMessages = []) => {
+  const response = await fetch(`${GEMINI_ENDPOINT}?key=${apiKey}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      contents: [
+        {
+          role: "user",
+          parts: [{ text: buildGeminiPrompt(question, historyMessages) }],
+        },
+      ],
+      generationConfig: {
+        temperature: 0.6,
+        maxOutputTokens: 300,
+      },
+    }),
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    throw new Error(error.error?.message || "Unable to reach Gemini right now.");
+  }
+
+  const data = await response.json();
+  return (
+    data?.candidates?.[0]?.content?.parts
+      ?.map((part) => part.text)
+      .join("\n")
+      .trim() || "Gemini returned an empty response."
+  );
+};
 
 const normalizeNames = (items) => {
   const map = new Map();
@@ -217,9 +274,23 @@ const Hero = () => {
   const [gifLoaded, setGifLoaded] = useState(false);
   const [isAvatarAnimating, setIsAvatarAnimating] = useState(false);
   const [gifRunId, setGifRunId] = useState(0);
+  const [askInput, setAskInput] = useState("");
+  const [askAiLoading, setAskAiLoading] = useState(false);
+  const [askAiQuestion, setAskAiQuestion] = useState("");
+  const [askAiResponse, setAskAiResponse] = useState("");
+  const [askAiError, setAskAiError] = useState("");
+  const [fullChatInput, setFullChatInput] = useState("");
+  const [aiChatMessages, setAiChatMessages] = useState([
+    {
+      id: "ai-welcome",
+      role: "assistant",
+      text: "Hey, I am your AI agent. Ask me about projects, stack, experience, or collaboration.",
+    },
+  ]);
   const hasAutoPlayedRef = useRef(false);
   const animationTimerRef = useRef(null);
   const aiTransitionTimerRef = useRef(null);
+  const fullChatScrollRef = useRef(null);
 
   useEffect(() => {
     const gifImage = new Image();
@@ -319,6 +390,98 @@ const Hero = () => {
     }, delay);
   }, []);
 
+  const submitAiQuestion = useCallback(
+    async (question) => {
+      const trimmedQuestion = question.trim();
+      if (!trimmedQuestion || askAiLoading) return;
+
+      const userMessage = {
+        id: `${Date.now()}-user`,
+        role: "user",
+        text: trimmedQuestion,
+      };
+      const historyForPrompt = aiChatMessages.filter(
+        (message) => message.id !== "ai-welcome",
+      );
+
+      setAskAiQuestion(trimmedQuestion);
+      setAskAiError("");
+      setAskAiResponse("");
+      setAskAiLoading(true);
+      setAiChatMessages((prev) => [...prev, userMessage]);
+
+      const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+      if (!apiKey) {
+        const keyError = "AI key missing. Add VITE_GEMINI_API_KEY to your .env file.";
+        setAskAiError(keyError);
+        setAiChatMessages((prev) => [
+          ...prev,
+          {
+            id: `${Date.now()}-assistant-error`,
+            role: "assistant",
+            text: keyError,
+          },
+        ]);
+        setAskAiLoading(false);
+        return;
+      }
+
+      try {
+        const answer = await fetchAskAiResponse(
+          apiKey,
+          trimmedQuestion,
+          historyForPrompt,
+        );
+        setAskAiResponse(answer);
+        setAiChatMessages((prev) => [
+          ...prev,
+          {
+            id: `${Date.now()}-assistant`,
+            role: "assistant",
+            text: answer,
+          },
+        ]);
+      } catch (error) {
+        const message =
+          error.message || "I hit an error reaching Gemini. Please try again.";
+        setAskAiError(message);
+        setAiChatMessages((prev) => [
+          ...prev,
+          {
+            id: `${Date.now()}-assistant-error`,
+            role: "assistant",
+            text: message,
+          },
+        ]);
+      } finally {
+        setAskAiLoading(false);
+      }
+    },
+    [aiChatMessages, askAiLoading],
+  );
+
+  const handleAskSubmit = useCallback(
+    async (event) => {
+      event.preventDefault();
+      const question = askInput.trim();
+      if (!question) return;
+      setAskInput("");
+      await submitAiQuestion(question);
+    },
+    [askInput, submitAiQuestion],
+  );
+
+  const handleFullChatSubmit = useCallback(
+    async (event) => {
+      event.preventDefault();
+      const question = fullChatInput.trim();
+      if (!question) return;
+      setFullChatInput("");
+      await submitAiQuestion(question);
+    },
+    [fullChatInput, submitAiQuestion],
+  );
+
   useEffect(() => {
     if (!isAiThinking) {
       setTypedGeneratingText("");
@@ -355,6 +518,14 @@ const Hero = () => {
 
     return () => clearInterval(stepTimer);
   }, [isAiThinking, pendingTab]);
+
+  useEffect(() => {
+    if (activeTab !== AI_CHAT_TAB_ID) return;
+    fullChatScrollRef.current?.scrollTo({
+      top: fullChatScrollRef.current.scrollHeight,
+      behavior: "smooth",
+    });
+  }, [activeTab, aiChatMessages, askAiLoading]);
 
   const skillsContent = useMemo(() => {
     const techNames = technologies.map((item) => item.name);
@@ -413,6 +584,7 @@ const Hero = () => {
   const isEducationView = activeTab === "education";
   const isExperienceView = activeTab === "experience";
   const isResumeView = activeTab === "resume";
+  const isAiFullChatView = activeTab === AI_CHAT_TAB_ID;
   const isAiPreviewView = isAiThinking && Boolean(pendingTab);
   const aiPromptText =
     tileQueryPrompts[pendingTab] || "Thinking about your request...";
@@ -425,7 +597,8 @@ const Hero = () => {
     isCertificationsView ||
     isResumeView ||
     isEducationView ||
-    isExperienceView;
+    isExperienceView ||
+    isAiFullChatView;
 
   return (
     <section
@@ -521,6 +694,151 @@ const Hero = () => {
                   ))}
                 </div>
               </div>
+            </motion.div>
+          ) : isAiFullChatView ? (
+            <motion.div
+              initial={{ opacity: 0, y: 26, scale: 0.97, filter: "blur(8px)" }}
+              animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
+              transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+              className="mx-auto mt-2 max-w-6xl text-left"
+            >
+              <ChildCloseButton onClick={() => setActiveTab(null)} />
+
+              <motion.div
+                layout
+                className="relative overflow-hidden rounded-[30px] border border-slate-300 bg-gradient-to-br from-[#f8fbff] via-white to-[#f1f5ff] shadow-[0_25px_80px_rgba(15,23,42,0.16)]"
+              >
+                <motion.div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute -left-20 top-[-120px] h-80 w-80 rounded-full bg-sky-300/30 blur-3xl"
+                  animate={{ x: [0, 35, 0], y: [0, 28, 0], opacity: [0.5, 0.8, 0.5] }}
+                  transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+                />
+                <motion.div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute -right-14 bottom-[-120px] h-96 w-96 rounded-full bg-blue-400/25 blur-3xl"
+                  animate={{ x: [0, -24, 0], y: [0, -30, 0], opacity: [0.45, 0.75, 0.45] }}
+                  transition={{ duration: 9, repeat: Infinity, ease: "easeInOut", delay: 0.3 }}
+                />
+                <div className="relative z-10 grid gap-5 p-4 sm:p-6 lg:grid-cols-[0.34fr_0.66fr]">
+                  <motion.aside
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.45, delay: 0.12 }}
+                    className="rounded-3xl border border-white/70 bg-white/80 p-5 shadow-[0_16px_45px_rgba(15,23,42,0.08)] backdrop-blur-md"
+                  >
+                    <div className="inline-flex h-14 w-14 items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_8px_20px_rgba(15,23,42,0.08)]">
+                      <img src={aiAvatar} alt="AI avatar" className="h-full w-full object-cover" />
+                    </div>
+                    <p className="mt-4 text-xs font-semibold uppercase tracking-[0.32em] text-slate-500">
+                      Full chat
+                    </p>
+                    <h2 className="mt-2 text-[1.8rem] font-black leading-tight text-slate-900 sm:text-[2.2rem]">
+                      AI Agent
+                    </h2>
+                    <p className="mt-3 text-sm leading-relaxed text-slate-600">
+                      Ask about stack, projects, delivery process, or collaboration ideas. The agent keeps chat context while you continue the conversation.
+                    </p>
+                    <div className="mt-5 grid grid-cols-2 gap-2">
+                      <div className="rounded-2xl border border-slate-200 bg-white px-3 py-2">
+                        <p className="text-[0.66rem] uppercase tracking-[0.2em] text-slate-500">Messages</p>
+                        <p className="mt-1 text-lg font-semibold text-slate-900">{aiChatMessages.length}</p>
+                      </div>
+                      <div className="rounded-2xl border border-slate-200 bg-white px-3 py-2">
+                        <p className="text-[0.66rem] uppercase tracking-[0.2em] text-slate-500">Status</p>
+                        <p className="mt-1 text-lg font-semibold text-slate-900">
+                          {askAiLoading ? "Thinking" : "Live"}
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab(null)}
+                      className="mt-5 inline-flex rounded-2xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50"
+                    >
+                      Back to portfolio
+                    </button>
+                  </motion.aside>
+
+                  <motion.div
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.45, delay: 0.18 }}
+                    className="flex h-[560px] flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white/85 shadow-[0_16px_45px_rgba(15,23,42,0.08)] backdrop-blur-md"
+                  >
+                    <div className="flex items-center justify-between border-b border-slate-200 px-5 py-4">
+                      <div>
+                        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">
+                          Conversation
+                        </p>
+                        <p className="mt-1 text-lg font-semibold text-slate-900">Ask me anything</p>
+                      </div>
+                      <span className="rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
+                        Gemini 2.5 Flash
+                      </span>
+                    </div>
+
+                    <div
+                      ref={fullChatScrollRef}
+                      className="flex-1 space-y-3 overflow-y-auto px-4 py-4 sm:px-5"
+                    >
+                      {aiChatMessages.map((message, index) => (
+                        <motion.div
+                          key={message.id}
+                          initial={{ opacity: 0, y: 14, scale: 0.98 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          transition={{ duration: 0.28, delay: index * 0.03 }}
+                          className={`max-w-[92%] rounded-2xl px-4 py-3 text-sm leading-relaxed shadow-sm ${
+                            message.role === "assistant"
+                              ? "mr-auto bg-slate-100 text-slate-800"
+                              : "ml-auto bg-gradient-to-r from-sky-500 to-blue-500 text-white"
+                          }`}
+                        >
+                          {message.text}
+                        </motion.div>
+                      ))}
+                      {askAiLoading && (
+                        <motion.div
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className="mr-auto inline-flex items-center gap-2 rounded-2xl bg-slate-100 px-4 py-3 text-sm text-slate-600"
+                        >
+                          <span className="h-2 w-2 animate-pulse rounded-full bg-slate-500" />
+                          Thinking...
+                        </motion.div>
+                      )}
+                    </div>
+
+                    <form
+                      onSubmit={handleFullChatSubmit}
+                      className="border-t border-slate-200 bg-white px-4 py-4 sm:px-5"
+                    >
+                      <div className="flex items-center gap-3 rounded-2xl border border-slate-300 bg-white px-3 py-2 shadow-[0_6px_20px_rgba(15,23,42,0.06)]">
+                        <input
+                          type="text"
+                          value={fullChatInput}
+                          onChange={(event) => setFullChatInput(event.target.value)}
+                          placeholder="Ask about projects, skills, architecture..."
+                          className="w-full bg-transparent px-1 py-2 text-sm text-slate-700 placeholder:text-slate-500 outline-none"
+                          autoComplete="off"
+                          disabled={askAiLoading}
+                        />
+                        <button
+                          type="submit"
+                          disabled={!fullChatInput.trim() || askAiLoading}
+                          className={`inline-flex rounded-xl px-4 py-2 text-sm font-semibold text-white transition ${
+                            fullChatInput.trim() && !askAiLoading
+                              ? "bg-gradient-to-r from-sky-500 to-blue-500 hover:brightness-95"
+                              : "cursor-not-allowed bg-slate-300 text-slate-500"
+                          }`}
+                        >
+                          Send
+                        </button>
+                      </div>
+                    </form>
+                  </motion.div>
+                </div>
+              </motion.div>
             </motion.div>
           ) : isProjectsView ? (
             <motion.div
@@ -1127,22 +1445,87 @@ const Hero = () => {
             </motion.div>
           </AnimatePresence>
 
-          {!isAiPreviewView && (
+          {!isAiPreviewView && !isAiFullChatView && (
             <>
-              <div className="mx-auto mt-10 flex w-full max-w-2xl items-center rounded-full border border-slate-300 bg-white px-3 py-2 shadow-[0_8px_24px_rgba(15,23,42,0.05)]">
+              <form
+                onSubmit={handleAskSubmit}
+                className="mx-auto mt-10 flex w-full max-w-2xl items-center rounded-full border border-slate-300 bg-white px-3 py-2 shadow-[0_8px_24px_rgba(15,23,42,0.05)]"
+              >
                 <input
                   type="text"
-                  readOnly
-                  value="Ask me anything..."
-                  className="w-full bg-transparent px-4 py-2 text-base text-slate-500 outline-none"
+                  value={askInput}
+                  onChange={(event) => setAskInput(event.target.value)}
+                  placeholder="Ask me anything..."
+                  className="w-full bg-transparent px-4 py-2 text-base text-slate-700 placeholder:text-slate-500 outline-none"
+                  aria-label="Ask me anything"
+                  autoComplete="off"
+                  disabled={askAiLoading}
                 />
                 <button
-                  type="button"
-                  className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-[#6aa5ff] text-xl text-white transition hover:bg-[#4f91f7]"
+                  type="submit"
+                  disabled={!askInput.trim() || askAiLoading}
+                  className={`inline-flex h-12 w-12 items-center justify-center rounded-full text-xl text-white transition ${
+                    askInput.trim() && !askAiLoading
+                      ? "bg-[#6aa5ff] hover:bg-[#4f91f7]"
+                      : "cursor-not-allowed bg-slate-300 text-slate-500"
+                  }`}
+                  aria-label="Submit question"
                 >
                   ↑
                 </button>
-              </div>
+              </form>
+              {(askAiLoading || askAiResponse || askAiError) && (
+                <div className="mx-auto mt-4 w-full max-w-2xl rounded-[24px] border border-slate-300 bg-white p-4 text-left shadow-[0_12px_30px_rgba(15,23,42,0.08)]">
+                  <div className="flex items-start gap-3">
+                    <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-white">
+                      <img src={aiAvatar} alt="AI avatar" className="h-full w-full object-cover" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+                        Ask AI
+                      </p>
+                      {askAiQuestion && (
+                        <p className="mt-1 text-sm text-slate-600">
+                          <span className="font-semibold text-slate-800">You:</span> {askAiQuestion}
+                        </p>
+                      )}
+                      <div
+                        className={`mt-3 rounded-2xl px-4 py-3 text-[0.95rem] leading-relaxed whitespace-pre-line ${
+                          askAiError
+                            ? "bg-rose-50 text-rose-700"
+                            : "bg-slate-100 text-slate-800"
+                        }`}
+                      >
+                        {askAiLoading
+                          ? "Thinking..."
+                          : askAiError || askAiResponse}
+                      </div>
+                    </div>
+                    <div className="ml-3 flex shrink-0 flex-col gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setActiveTab(AI_CHAT_TAB_ID)}
+                        className="rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold text-slate-600 transition hover:border-slate-400 hover:text-slate-900"
+                      >
+                        Chat
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (askAiLoading) return;
+                          setAskAiQuestion("");
+                          setAskAiResponse("");
+                          setAskAiError("");
+                        }}
+                        className="rounded-full border border-slate-300 px-3 py-1 text-xs text-slate-500 transition hover:border-slate-400 hover:text-slate-700"
+                        aria-label="Dismiss AI response"
+                      >
+                        Clear
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               <div className="mx-auto mt-7 grid w-full max-w-[1240px] grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3 lg:grid-cols-8">
                 {quickTabs.map((tab) => (
