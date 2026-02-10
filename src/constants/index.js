@@ -44,6 +44,7 @@ import {
   github,
   mongodb,
   docker,
+  vibesocialmedia,
 } from "../assets";
 
 const services = [
@@ -115,7 +116,7 @@ const technologies = [
     name: "C++",
     icon: cplusplus,
   },
-    {
+  {
     name: "Powershell",
     icon: powershell,
   },
@@ -142,7 +143,7 @@ const technologies = [
   {
     name: "Tailwind CSS",
     icon: tailwind,
-  }, 
+  },
   {
     name: "React JS",
     icon: reactjs,
@@ -346,7 +347,7 @@ const extracurricular = [
     credential: "https://www.credly.com/badges/8763a6bb-2d08-433d-ac45-ef11aaac34df/public_url"
   },
   {
-    title:"Algorithmic Toolbox-University of California San Diego",
+    title: "Algorithmic Toolbox-University of California San Diego",
     type: "Professional Certificate",
     icon: github,
     iconBg: "#000000",
@@ -355,9 +356,9 @@ const extracurricular = [
     credential: "https://www.coursera.org/account/accomplishments/certificate/2YGASKXXC75P",
   },
   {
-    title:"Python Essentials 1",
+    title: "Python Essentials 1",
     type: "Cisco Professional Certificate",
-    icon: cisco ,
+    icon: cisco,
     iconBg: "#000000",
     date: "Issued: July 2022",
     points: ["Algorithmic Techniques,Data Structures,Basic Python Programming,Searching Algorithms,Computational Problems,Algorithm Design"],
@@ -422,10 +423,10 @@ const projects = [
     name: "Flixbus-Monthly-Price-Finder 🌐",
     description:
       "Welcome to the FlixBus Price Scraper! This Node.js script allows you to scrape bus prices from FlixBus and export them to an Excel file. 📈\n" +
-        "\n" +
-        "🌟 Features\n" +
-        "Export data to an Excel file for easy analysis.\n" +
-        "Customize search parameters like dates, number of days",
+      "\n" +
+      "🌟 Features\n" +
+      "Export data to an Excel file for easy analysis.\n" +
+      "Customize search parameters like dates, number of days",
     tags: [
       {
         name: "Node.js",
@@ -499,6 +500,32 @@ const projects = [
     image: password_generator,
     source_code_link: "https://github.com",
     live_project_link: "https://github.com",
+  },
+  {
+    name: "Vibe - Social Media App 📱",
+    description:
+      "A full-stack cross-platform social media app built with Expo (React Native) and NestJS. Features include JWT authentication, real-time messaging via Socket.io, threads & posts, user profiles, media uploads with AWS S3, push notifications, and a modern UI with NativeWind.",
+    tags: [
+      {
+        name: "React Native",
+        color: "blue-text-gradient",
+      },
+      {
+        name: "NestJS",
+        color: "green-text-gradient",
+      },
+      {
+        name: "PostgreSQL",
+        color: "pink-text-gradient",
+      },
+      {
+        name: "Socket.io",
+        color: "blue-text-gradient",
+      },
+    ],
+    image: vibesocialmedia,
+    source_code_link: "https://github.com/ankit1324/React-nativ-socail-media-NustJs",
+    live_project_link: "",
   },
 ];
 

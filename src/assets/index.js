@@ -50,6 +50,7 @@ import pythonanalysis from "./data_analysis.png";
 import password_generator from "./passwordgenerator.png";
 import financialflowimage from "./FinancialFlowDemonstration.png";
 import enterpriseapitester from "./enterpriseapiui.png";
+import vibesocialmedia from "./IMG_0076.png";
 
 import resume from "./AnkitChaudhary.pdf";
 
@@ -101,4 +102,5 @@ export {
   enterpriseapitester,
   profilepic,
   docker,
+  vibesocialmedia,
 };
