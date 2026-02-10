@@ -1,13 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 
 import { styles } from "../styles";
 import { navLinks } from "../constants";
 import { useScrollDirection } from "../hooks/useScrollDirection";
 
+const routeBySection = {
+  about: "/about",
+  education: "/education",
+  work: "/work",
+  extracurricular: "/certifications",
+  skills: "/skills",
+  projects: "/projects",
+  contact: "/contact",
+};
+
 const Navbar = () => {
-  const [active, setActive] = useState("");
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const scrollDirection = useScrollDirection();
@@ -33,18 +42,17 @@ const Navbar = () => {
     <ul className="flex flex-col md:flex-row gap-6 text-sm font-semibold tracking-wide">
       {navLinks.map((nav) => (
         <li key={nav.id}>
-          <a
-            href={`#${nav.id}`}
-            className={`transition-colors duration-200 ${
-              active === nav.title ? "text-white" : "text-slate-300"
-            } hover:text-white`}
-            onClick={() => {
-              setActive(nav.title);
-              setOpen(false);
-            }}
+          <NavLink
+            to={routeBySection[nav.id] || "/"}
+            className={({ isActive }) =>
+              `transition-colors duration-200 ${
+                isActive ? "text-white" : "text-slate-300"
+              } hover:text-white`
+            }
+            onClick={() => setOpen(false)}
           >
             {nav.title}
-          </a>
+          </NavLink>
         </li>
       ))}
     </ul>
@@ -68,13 +76,16 @@ const Navbar = () => {
           to="/"
           className="flex items-center gap-4"
           onClick={() => {
-            setActive("");
             window.scrollTo({ top: 0, behavior: "smooth" });
+            setOpen(false);
           }}
         >
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-sky-400 text-lg font-bold text-white shadow-lg shadow-sky-500/30">
-            AC
-          </div>
+          <img
+            src="/ac-logo.svg"
+            alt="AC logo"
+            className="h-12 w-12 rounded-2xl object-cover shadow-lg shadow-slate-900/15"
+            loading="eager"
+          />
           <div className="leading-tight">
             <p className="text-xs uppercase tracking-[0.5em] text-slate-400">
               Portfolio
@@ -87,13 +98,13 @@ const Navbar = () => {
 
         <div className="hidden flex-1 items-center justify-end gap-8 md:flex">
           {menuItems}
-          <a
-            href="#contact"
+          <Link
+            to="/contact"
             className="inline-flex items-center gap-2 rounded-full bg-white/90 px-5 py-2 text-sm font-semibold text-slate-900 transition hover:bg-white"
           >
             Let&apos;s talk
             <span aria-hidden="true">↗</span>
-          </a>
+          </Link>
         </div>
 
         <button
@@ -131,13 +142,13 @@ const Navbar = () => {
           >
             <div className="mx-auto mt-4 max-w-6xl rounded-3xl border border-white/10 bg-slate-950/80 px-6 py-5 backdrop-blur-2xl">
               {menuItems}
-              <a
-                href="#contact"
+              <Link
+                to="/contact"
                 className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-sky-500 to-violet-500 px-5 py-3 text-sm font-semibold text-white"
                 onClick={() => setOpen(false)}
               >
                 Start a project
-              </a>
+              </Link>
             </div>
           </motion.div>
         )}

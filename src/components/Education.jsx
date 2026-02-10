@@ -5,6 +5,29 @@ import { styles } from "../styles";
 import { education } from "../constants";
 import { SectionWrapper } from "../hoc";
 
+const tileStagger = {
+  hidden: {},
+  show: {
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.08,
+    },
+  },
+};
+
+const tileReveal = {
+  hidden: { opacity: 0, y: 24, scale: 0.96 },
+  show: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      duration: 0.45,
+      ease: "easeOut",
+    },
+  },
+};
+
 const Education = () => {
   return (
     <section>
@@ -26,33 +49,42 @@ const Education = () => {
       >
         Education
       </motion.h2>
+      <p className="mx-auto mt-4 max-w-3xl text-center text-sm text-slate-400">
+        Academic milestones and foundations that shaped the current engineering
+        work.
+      </p>
 
-      <div className="relative mt-12 space-y-10">
-        <div className="pointer-events-none absolute left-4 top-0 hidden h-full w-px bg-gradient-to-b from-sky-400/40 via-white/10 to-transparent md:block" />
-        {education.map((item, index) => (
+      <motion.div
+        variants={tileStagger}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, amount: 0.2 }}
+        className="mt-12 grid gap-6 md:grid-cols-2"
+      >
+        {education.map((item) => (
           <motion.article
             key={`${item.company_name}-${item.date}`}
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: index * 0.1 }}
-            className="relative pl-10 md:pl-16"
+            variants={tileReveal}
+            whileHover={{ scale: 1.02 }}
+            className="glass-panel group relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-6 transition-all hover:border-sky-400/50 hover:shadow-[0_20px_60px_rgba(56,189,248,0.2)]"
           >
-            <div className="absolute left-1 top-8 hidden h-5 w-5 -translate-x-1/2 transform items-center justify-center rounded-full border border-white/40 bg-slate-900 md:flex">
-              <span className="h-2.5 w-2.5 rounded-full bg-sky-400" />
-            </div>
-            <div className="glass-panel rounded-3xl border border-white/10 bg-white/5 p-6">
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-emerald-400/15 to-transparent" />
+            <div className="relative flex h-full flex-col">
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <div className="flex items-center gap-4">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-white/5 p-2">
+                  <motion.div
+                    whileHover={{ rotate: 360, scale: 1.1 }}
+                    transition={{ duration: 0.6 }}
+                    className="flex h-14 w-14 items-center justify-center rounded-2xl border border-white/15 bg-white/5 p-2 transition-all group-hover:border-sky-400/50 group-hover:bg-sky-400/10"
+                  >
                     <img
                       src={item.icon}
                       alt={item.company_name}
                       className="h-full w-full object-contain"
                     />
-                  </div>
+                  </motion.div>
                   <div>
-                    <p className="text-lg font-semibold text-white">
+                    <p className="text-lg font-semibold text-white group-hover:text-sky-400 transition-colors">
                       {item.title}
                     </p>
                     <p className="text-sm text-slate-400">
@@ -60,27 +92,33 @@ const Education = () => {
                     </p>
                   </div>
                 </div>
-                <p className="text-xs uppercase tracking-[0.4em] text-slate-400">
+                <p className="rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs uppercase tracking-[0.25em] text-slate-300">
                   {item.date}
                 </p>
               </div>
-              {item.points?.filter((point) => point && point.trim().length > 0)
-                .length > 0 && (
+              {item.points?.filter((point) => point && point.trim().length > 0).length > 0 && (
                 <ul className="mt-4 space-y-2 text-sm text-slate-300">
                   {item.points
                     .filter((point) => point && point.trim().length > 0)
                     .map((point, idx) => (
-                      <li key={`${item.title}-point-${idx}`} className="flex gap-2">
+                      <motion.li
+                        key={`${item.title}-point-${idx}`}
+                        initial={{ opacity: 0, x: -16 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.3, delay: 0.12 + idx * 0.06 }}
+                        className="flex gap-2"
+                      >
                         <span className="text-sky-400">▹</span>
                         <span>{point}</span>
-                      </li>
+                      </motion.li>
                     ))}
                 </ul>
               )}
             </div>
           </motion.article>
         ))}
-      </div>
+      </motion.div>
     </section>
   );
 };

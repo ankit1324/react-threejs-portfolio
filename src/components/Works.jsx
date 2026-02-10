@@ -14,7 +14,7 @@ const ProjectCard = ({ project, index }) => {
   return (
     <GlowCard
       glowColor="sky"
-      className="glass-panel group flex flex-col rounded-3xl border border-white/10 bg-white/5 p-5 transition-all hover:border-white/30"
+      className="glass-panel group flex flex-col rounded-3xl border border-white/10 bg-white/5 p-4 transition-all hover:border-white/30"
     >
       <motion.article
         initial={{ opacity: 0, y: 40 }}
@@ -25,7 +25,7 @@ const ProjectCard = ({ project, index }) => {
         onHoverEnd={() => setIsHovered(false)}
         className="flex flex-col"
       >
-      <div className="relative h-60 w-full overflow-hidden rounded-2xl border border-white/10">
+      <div className="relative h-44 w-full overflow-hidden rounded-2xl border border-white/10">
         <motion.img
           src={project.image}
           alt={project.name}
@@ -34,41 +34,41 @@ const ProjectCard = ({ project, index }) => {
           animate={{ scale: isHovered ? 1.1 : 1 }}
           transition={{ duration: 0.4 }}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-slate-900/10 to-slate-950/80" />
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/25 via-slate-950/55 to-slate-950/90" />
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: isHovered ? 1 : 0, y: isHovered ? 0 : 10 }}
           transition={{ duration: 0.3 }}
           className="absolute inset-0 flex items-center justify-center bg-slate-950/60 backdrop-blur-sm"
         >
-          <p className="text-sm font-semibold text-white">View Details</p>
+          <p className="text-xs font-semibold text-white">View Details</p>
         </motion.div>
-        <div className="absolute bottom-4 left-4 right-4 flex flex-wrap gap-2">
+        <div className="absolute bottom-3 left-3 right-3 flex flex-wrap gap-1.5">
           {project.tags.slice(0, 3).map((tag) => (
             <span
               key={`${project.name}-${tag.name}`}
-              className="rounded-full border border-white/20 bg-black/40 px-3 py-1 text-xs text-white backdrop-blur-sm"
+              className="rounded-full border border-white/20 bg-black/40 px-2.5 py-1 text-[0.65rem] text-white backdrop-blur-sm"
             >
               #{tag.name}
             </span>
           ))}
         </div>
       </div>
-      <div className="mt-6 flex flex-col gap-3">
+      <div className="mt-4 flex flex-col gap-2.5">
         <div>
-          <h3 className="text-2xl font-semibold text-white transition-colors group-hover:text-sky-400">
+          <h3 className="text-xl font-semibold text-white transition-colors group-hover:text-sky-400">
             {project.name}
           </h3>
-          <p className="mt-2 text-sm text-slate-300 line-clamp-3">
+          <p className="mt-1.5 text-xs text-slate-300 line-clamp-2">
             {project.description}
           </p>
         </div>
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap gap-2">
           {project.live_project_link && (
             <MagneticButton
               type="button"
               onClick={() => window.open(project.live_project_link, "_blank")}
-              className="group relative inline-flex flex-1 items-center justify-center gap-2 overflow-hidden rounded-2xl bg-gradient-to-r from-sky-500 to-violet-500 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-sky-500/20 transition-all hover:shadow-sky-500/40"
+              className="group relative inline-flex flex-1 items-center justify-center gap-1.5 overflow-hidden rounded-xl bg-gradient-to-r from-sky-500 to-violet-500 px-3 py-1.5 text-xs font-semibold text-white shadow-lg shadow-sky-500/20 transition-all hover:shadow-sky-500/40"
             >
               <span className="relative z-10 flex items-center gap-2">
                 View Live
@@ -80,9 +80,9 @@ const ProjectCard = ({ project, index }) => {
           <MagneticButton
             type="button"
             onClick={() => window.open(project.source_code_link, "_blank")}
-            className="inline-flex flex-1 items-center justify-center gap-2 rounded-2xl border border-white/20 bg-white/5 px-4 py-2 text-sm font-semibold text-white/90 backdrop-blur-sm transition-all hover:border-white/40 hover:bg-white/10"
+            className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-white/20 bg-white/5 px-3 py-1.5 text-xs font-semibold text-white/90 backdrop-blur-sm transition-all hover:border-white/40 hover:bg-white/10"
           >
-            <img src={github} alt="GitHub" className="h-5 w-5" />
+            <img src={github} alt="GitHub" className="h-4 w-4" />
             Source
           </MagneticButton>
         </div>
@@ -174,13 +174,13 @@ const Works = () => {
         </div>
       </motion.div>
 
-      <div className="mt-12 grid gap-8 md:grid-cols-2">
+      <div className="mt-10 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
         {filteredProjects.length > 0 ? (
           filteredProjects.map((project, index) => (
             <ProjectCard key={project.name} project={project} index={index} />
           ))
         ) : (
-          <div className="col-span-2 py-12 text-center text-slate-400">
+          <div className="col-span-3 py-12 text-center text-slate-400">
             No projects found matching your criteria.
           </div>
         )}

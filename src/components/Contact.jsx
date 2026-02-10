@@ -8,6 +8,28 @@ import { styles } from "../styles";
 import { EarthCanvas } from "./canvas";
 import { SectionWrapper } from "../hoc";
 
+const staggerReveal = {
+  hidden: {},
+  show: {
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+const itemReveal = {
+  hidden: { opacity: 0, y: 16 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.4,
+      ease: "easeOut",
+    },
+  },
+};
+
 const Contact = () => {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [loading, setLoading] = useState(false);
@@ -110,24 +132,59 @@ const Contact = () => {
         >
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
-              <p className={`${styles.sectionSubText} text-left`}>Say hello</p>
-              <h3 className={`${styles.sectionHeadText} text-left`}>Contact</h3>
+              <motion.p
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4 }}
+                className={`${styles.sectionSubText} text-left`}
+              >
+                Say hello
+              </motion.p>
+              <motion.h3
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: 0.08 }}
+                className={`${styles.sectionHeadText} text-left`}
+              >
+                Contact
+              </motion.h3>
             </div>
-            <a
+            <motion.a
               href="tel:+919805531236"
+              whileHover={{ y: -3, scale: 1.02 }}
+              transition={{ duration: 0.2 }}
               className="rounded-2xl border border-white/20 px-4 py-2 text-sm font-semibold text-white/80 transition hover:border-white/40"
             >
               +91 98055 31236
-            </a>
+            </motion.a>
           </div>
-          <p className="mt-4 text-sm text-slate-400">
+          <motion.p
+            initial={{ opacity: 0, y: 8 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4, delay: 0.12 }}
+            className="mt-4 text-sm text-slate-400"
+          >
             Tell me about the product, team, or crazy idea you&apos;re building.
             I usually respond within 24 hours.
-          </p>
+          </motion.p>
 
-          <form onSubmit={handleSubmit} className="mt-10 space-y-6">
-            <div className="grid gap-6 md:grid-cols-2">
-              <label className="flex flex-col text-sm font-semibold text-slate-200">
+          <motion.form
+            onSubmit={handleSubmit}
+            variants={staggerReveal}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.35 }}
+            className="mt-10 space-y-6"
+          >
+            <motion.div variants={itemReveal} className="grid gap-6 md:grid-cols-2">
+              <motion.label
+                variants={itemReveal}
+                whileHover={{ y: -2 }}
+                className="flex flex-col text-sm font-semibold text-slate-200"
+              >
                 Name
                 <input
                   type="text"
@@ -137,8 +194,12 @@ const Contact = () => {
                   placeholder="Who should I thank?"
                   className="mt-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-base text-white placeholder:text-slate-500 focus:border-sky-400 focus:outline-none"
                 />
-              </label>
-              <label className="flex flex-col text-sm font-semibold text-slate-200">
+              </motion.label>
+              <motion.label
+                variants={itemReveal}
+                whileHover={{ y: -2 }}
+                className="flex flex-col text-sm font-semibold text-slate-200"
+              >
                 Email
                 <input
                   type="email"
@@ -148,9 +209,13 @@ const Contact = () => {
                   placeholder="your@email.com"
                   className="mt-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-base text-white placeholder:text-slate-500 focus:border-sky-400 focus:outline-none"
                 />
-              </label>
-            </div>
-            <label className="flex flex-col text-sm font-semibold text-slate-200">
+              </motion.label>
+            </motion.div>
+            <motion.label
+              variants={itemReveal}
+              whileHover={{ y: -2 }}
+              className="flex flex-col text-sm font-semibold text-slate-200"
+            >
               Message
               <textarea
                 rows={6}
@@ -160,10 +225,11 @@ const Contact = () => {
                 placeholder="Tell me about the vision, the problems, or the vibe you’d like to create."
                 className="mt-2 rounded-3xl border border-white/10 bg-white/5 px-4 py-4 text-base text-white placeholder:text-slate-500 focus:border-sky-400 focus:outline-none"
               />
-            </label>
+            </motion.label>
             <motion.button
               type="submit"
               disabled={loading}
+              variants={itemReveal}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className="inline-flex w-full items-center justify-center gap-2 rounded-3xl bg-gradient-to-r from-sky-500 to-violet-500 px-6 py-4 text-sm font-semibold text-white shadow-lg shadow-sky-500/30 transition disabled:opacity-60 disabled:cursor-not-allowed"
@@ -192,7 +258,7 @@ const Contact = () => {
                 "Send message"
               )}
             </motion.button>
-          </form>
+          </motion.form>
         </motion.div>
 
         <motion.div
@@ -218,8 +284,18 @@ const Contact = () => {
           <div className="h-[420px] w-full">
             <EarthCanvas />
           </div>
-          <div className="grid gap-4 border-t border-white/10 px-6 py-6 text-sm text-slate-300">
-            <div className="flex items-center justify-between">
+          <motion.div
+            variants={staggerReveal}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+            className="grid gap-4 border-t border-white/10 px-6 py-6 text-sm text-slate-300"
+          >
+            <motion.div
+              variants={itemReveal}
+              whileHover={{ x: 4 }}
+              className="flex items-center justify-between"
+            >
               <span>Email</span>
               <a
                 href="mailto:ankitdx245@gmail.com"
@@ -227,18 +303,26 @@ const Contact = () => {
               >
                 ankitdx245@gmail.com
               </a>
-            </div>
-            <div className="flex items-center justify-between">
+            </motion.div>
+            <motion.div
+              variants={itemReveal}
+              whileHover={{ x: 4 }}
+              className="flex items-center justify-between"
+            >
               <span>Current base</span>
               <p className="font-semibold text-white">
                 Mumbai · Himachal Pradesh
               </p>
-            </div>
-            <div className="flex items-center justify-between">
+            </motion.div>
+            <motion.div
+              variants={itemReveal}
+              whileHover={{ x: 4 }}
+              className="flex items-center justify-between"
+            >
               <span>Response time</span>
               <p className="font-semibold text-white">~24 hours</p>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </motion.div>
       </div>
     </section>

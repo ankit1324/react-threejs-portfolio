@@ -64,7 +64,7 @@ import wordsearch from "./wordsearchoutput.jpg"
 import financialflowimage from "./FinancialFlowDemonstration.png"
 import enterpriseapitester from "./enterpriseapiui.png"
 
-import resume from "./AnkitChaudharyResume.pdf";
+import resume from "./AnkitChaudhary.pdf";
 import awsdbcert from "./AWS Database Specialty Certified - Sunny Jayendra Patel.jpg"
 import connectwisecert from "./Connectwise-Scripting-Certification.pdf"
 

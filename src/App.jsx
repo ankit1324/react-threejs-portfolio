@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import "./App.css";
-import { BrowserRouter } from "react-router-dom";
-import { AnimatePresence } from "framer-motion";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import {
   About,
   Contact,
@@ -9,67 +8,46 @@ import {
   Experience,
   Extracurricular,
   Hero,
-  Navbar,
   Tech,
-  Terminal,
   Works,
-  Assistant,
-  StarsCanvas,
 } from "./components";
-import CursorTrail from "./components/CursorTrail";
 import ScrollProgress, { ScrollToTop } from "./components/ScrollProgress";
-import ParticleBackground from "./components/ParticleBackground";
-import { PageLoader } from "./components/Loader";
 import SmoothScroll from "./components/SmoothScroll";
-import BackgroundBeams from "./components/BackgroundBeams";
-import CommandPalette from "./components/CommandPalette";
-import FloatingActionButton from "./components/FloatingActionButton";
-import SpotlightEffect from "./components/SpotlightEffect";
-import MouseFollower from "./components/MouseFollower";
-import GridPattern from "./components/GridPattern";
+import SplashCursor from "./components/SplashCursor";
+
+const RouteScrollToTop = () => {
+  const { pathname } = useLocation();
+
+  React.useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }, [pathname]);
+
+  return null;
+};
 
 function App() {
-  const [loading, setLoading] = useState(true);
-
   return (
     <BrowserRouter>
-      <AnimatePresence mode="wait">
-        {loading ? (
-          <PageLoader key="loader" onComplete={() => setLoading(false)} />
-        ) : (
-          <div className="app-shell" key="app">
-            <div className="noise-overlay" />
-            <SmoothScroll />
-            <CursorTrail />
-            <ScrollProgress />
-            <ScrollToTop />
-            <CommandPalette />
-            <FloatingActionButton />
-            <SpotlightEffect />
-            <MouseFollower />
-            <GridPattern />
-            <BackgroundBeams />
-            <ParticleBackground />
-            <div className="aurora aurora--violet -top-32 -left-24" />
-            <div className="aurora aurora--cyan top-1/3 -right-10" />
-            <div className="aurora aurora--pink bottom-0 left-1/4" />
-            <StarsCanvas />
-            <Navbar />
-            <main className="relative z-10 flex flex-col gap-6">
-              <Hero />
-              <About />
-              <Education />
-              <Experience />
-              <Terminal />
-              <Extracurricular />
-              <Tech />
-              <Works />
-              <Contact />
-            </main>
-            <Assistant />
-          </div>
-        )}
-      </AnimatePresence>
+      <div className="app-shell">
+        <RouteScrollToTop />
+        <SmoothScroll />
+        <SplashCursor />
+        <ScrollProgress />
+        <ScrollToTop />
+        <main className="relative z-10 flex flex-col gap-6">
+          <Routes>
+            <Route path="/" element={<Hero />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/education" element={<Education />} />
+            <Route path="/work" element={<Experience />} />
+            <Route path="/certifications" element={<Extracurricular />} />
+            <Route path="/skills" element={<Tech />} />
+            <Route path="/projects" element={<Works />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="*" element={<Hero />} />
+          </Routes>
+        </main>
+      </div>
     </BrowserRouter>
   );
 }

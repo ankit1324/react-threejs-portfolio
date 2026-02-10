@@ -49,34 +49,19 @@ body {
   color: #f8fafc;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
-  cursor: none;
+  cursor: auto;
   overflow-x: hidden;
 }
 
-@media (max-width: 768px) {
-  body {
-    cursor: auto;
-  }
+a,
+button {
+  cursor: pointer;
 }
 
-* {
-  cursor: none;
-}
-
-@media (max-width: 768px) {
-  * {
-    cursor: auto;
-  }
-}
-
-a, button, input, textarea, select {
-  cursor: none !important;
-}
-
-@media (max-width: 768px) {
-  a, button, input, textarea, select {
-    cursor: pointer !important;
-  }
+input,
+textarea,
+select {
+  cursor: text;
 }
 
 body::after {
