@@ -558,7 +558,7 @@ const Hero = () => {
   return (
     <section
       id="home"
-      className="relative -mx-6 min-h-screen overflow-hidden bg-[#f3f4f6] px-6 pt-14 pb-24 text-slate-900 sm:-mx-12 sm:px-12 sm:pt-16 lg:-mx-20 lg:px-20"
+      className="relative -mx-4 min-h-screen overflow-hidden bg-[#f3f4f6] px-4 pt-10 pb-20 text-slate-900 sm:-mx-10 sm:px-10 sm:pt-14 sm:pb-24 lg:-mx-20 lg:px-20 lg:pt-16"
     >
       <div className="mx-auto max-w-6xl">
         <div className={`mx-auto text-center ${isExpandedView ? "max-w-6xl" : "max-w-4xl"}`}>
@@ -1281,7 +1281,7 @@ const Hero = () => {
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.45 }}
-              className="mx-auto mt-2 max-w-5xl"
+              className="mx-auto mt-2 max-w-5xl px-1 sm:px-0"
             >
               <div className="text-left">
                 <ChildCloseButton onClick={() => setActiveTab(null)} />
@@ -1290,40 +1290,59 @@ const Hero = () => {
                 <img src={aiAvatar} alt="Ankit icon" className="h-full w-full object-cover" />
               </div>
 
-              <div className="mt-8 grid items-start gap-8 text-left lg:grid-cols-[0.9fr_1.1fr]">
-                <div className="overflow-hidden rounded-[26px] bg-white shadow-[0_20px_50px_rgba(15,23,42,0.12)]">
-                  <img
-                    src={profilePhoto}
-                    alt="Ankit Chaudhary"
-                    className="h-full w-full object-cover"
-                    loading="lazy"
-                  />
-                </div>
+              <div className="mt-7 overflow-hidden rounded-[30px] border border-slate-300 bg-gradient-to-br from-white via-[#f8fbff] to-[#edf4ff] p-4 shadow-[0_22px_60px_rgba(15,23,42,0.12)] sm:p-7">
+                <div className="grid items-start gap-8 text-center sm:text-left lg:grid-cols-[0.82fr_1.18fr]">
+                  <div className="mx-auto flex w-full max-w-[280px] flex-col items-center sm:max-w-[320px]">
+                    <div className="relative inline-flex rounded-full bg-gradient-to-br from-sky-400 via-blue-500 to-indigo-600 p-[5px] shadow-[0_18px_40px_rgba(56,189,248,0.3)]">
+                      <div className="h-[220px] w-[220px] overflow-hidden rounded-full border-4 border-white bg-white sm:h-[280px] sm:w-[280px]">
+                        <img
+                          src={profilePhoto}
+                          alt="Ankit Chaudhary"
+                          className="h-full w-full object-cover object-top"
+                          loading="lazy"
+                        />
+                      </div>
+                    </div>
+                    <p className="mt-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500 sm:text-sm">
+                      Product-minded Engineer
+                    </p>
+                    <p className="mt-1 text-sm text-slate-600">
+                      Chandigarh, India
+                    </p>
+                  </div>
 
-                <div>
-                  <h2 className="text-[2.3rem] font-bold leading-tight text-slate-900 sm:text-[2.8rem]">
-                    Ankit Chaudhary
-                  </h2>
-                  <p className="mt-2 text-lg text-slate-500 sm:text-2xl">
-                    React Native Developer
-                    <span className="mx-3 text-slate-300">•</span>
-                    Full Stack Engineer
-                  </p>
-                  <p className="mt-5 text-[1.15rem] leading-relaxed text-slate-800 sm:text-[1.3rem]">
-                    Hey 👋 I build performant mobile and web products with clean architecture, reusable components, and fast developer workflows.
-                  </p>
-                  <p className="mt-4 text-[1.1rem] leading-relaxed text-slate-700 sm:text-[1.22rem]">
-                    I focus on React Native, React, TypeScript, Node.js, and cloud deployments that scale from MVP to production.
-                  </p>
-                  <div className="mt-5 flex flex-wrap gap-2.5">
-                    {["React Native", "React", "TypeScript", "Node.js", "AWS", "Three.js"].map((tag) => (
-                      <span
-                        key={tag}
-                        className="rounded-full border border-slate-300 bg-slate-100 px-4 py-1.5 text-sm font-medium text-slate-700"
-                      >
-                        {tag}
-                      </span>
-                    ))}
+                  <div className="min-w-0">
+                    <h2 className="text-[2rem] font-bold leading-tight text-slate-900 sm:text-[2.6rem]">
+                      Ankit Chaudhary
+                    </h2>
+                    <p className="mt-2 text-[1.05rem] text-slate-500 sm:text-[1.4rem]">
+                      React Native Developer
+                      <span className="mx-2 text-slate-300 sm:mx-3">•</span>
+                      Full Stack Engineer
+                    </p>
+                    <p className="mt-4 text-[1.02rem] leading-relaxed text-slate-800 sm:text-[1.18rem]">
+                      Hey, I build high-performance apps that feel smooth on the
+                      surface and stay reliable under real-world load. I care about
+                      architecture, code quality, and shipping features that users
+                      notice immediately.
+                    </p>
+                    <p className="mt-3 text-[1rem] leading-relaxed text-slate-700 sm:text-[1.12rem]">
+                      Over the last few years I have worked across mobile, web, and
+                      cloud stacks, turning early ideas into production-ready
+                      products. My workflow combines reusable UI systems, clean API
+                      contracts, and strong release discipline.
+                    </p>
+                    <p className="mt-3 text-[1rem] leading-relaxed text-slate-700 sm:text-[1.12rem]">
+                      I usually partner with founders and teams who want fast
+                      iteration without sacrificing maintainability, accessibility,
+                      and long-term scalability.
+                    </p>
+
+                    <p className="mt-4 text-[1rem] leading-relaxed text-slate-700 sm:text-[1.12rem]">
+                      I work end-to-end on product delivery, from UX direction
+                      and frontend implementation to backend integrations,
+                      deployment, and post-release iteration.
+                    </p>
                   </div>
                 </div>
               </div>
@@ -1338,11 +1357,11 @@ const Hero = () => {
                 <div className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-white shadow-[0_8px_20px_rgba(15,23,42,0.08)]">
                   <AnimatedMainLogo />
                 </div>
-                <p className="mt-4 text-[2rem] font-semibold leading-tight tracking-tight sm:text-[2.3rem]">
+                <p className="mt-4 text-[1.65rem] font-semibold leading-tight tracking-tight sm:text-[2.3rem]">
                   Hey, I&apos;m Ankit
                   <span className="ml-2">👋</span>
                 </p>
-                <h1 className="mt-2 text-[2.8rem] font-black leading-[0.95] tracking-tight sm:text-[4.6rem]">
+                <h1 className="mt-2 text-[2.3rem] font-black leading-[0.96] tracking-tight sm:text-[4.6rem]">
                   Software Engineer
                 </h1>
               </motion.div>
@@ -1351,7 +1370,7 @@ const Hero = () => {
                 initial={{ opacity: 0, scale: 0.96 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.1, duration: 0.4 }}
-                className="mx-auto mt-8 h-56 w-56 overflow-hidden rounded-full bg-white shadow-[0_25px_60px_rgba(15,23,42,0.12)] sm:h-64 sm:w-64"
+                className="mx-auto mt-7 h-52 w-52 overflow-hidden rounded-full bg-white shadow-[0_25px_60px_rgba(15,23,42,0.12)] sm:mt-8 sm:h-64 sm:w-64"
               >
                 <img
                   src={avatarSource}
@@ -1370,14 +1389,14 @@ const Hero = () => {
             <>
               <form
                 onSubmit={handleAskSubmit}
-                className="mx-auto mt-10 flex w-full max-w-2xl items-center rounded-full border border-slate-300 bg-white px-3 py-2 shadow-[0_8px_24px_rgba(15,23,42,0.05)]"
+                className="mx-auto mt-8 flex w-full max-w-2xl items-center rounded-full border border-slate-300 bg-white px-2.5 py-1.5 shadow-[0_8px_24px_rgba(15,23,42,0.05)] sm:mt-10 sm:px-3 sm:py-2"
               >
                 <input
                   type="text"
                   value={askInput}
                   onChange={(event) => setAskInput(event.target.value)}
                   placeholder="Ask me anything..."
-                  className="w-full bg-transparent px-4 py-2 text-base text-slate-700 placeholder:text-slate-500 outline-none"
+                  className="w-full bg-transparent px-3 py-2 text-sm text-slate-700 placeholder:text-slate-500 outline-none sm:px-4 sm:text-base"
                   aria-label="Ask me anything"
                   autoComplete="off"
                   disabled={askAiLoading}
@@ -1385,7 +1404,7 @@ const Hero = () => {
                 <button
                   type="submit"
                   disabled={!askInput.trim() || askAiLoading}
-                  className={`inline-flex h-12 w-12 items-center justify-center rounded-full text-xl text-white transition ${
+                  className={`inline-flex h-10 w-10 items-center justify-center rounded-full text-lg text-white transition sm:h-12 sm:w-12 sm:text-xl ${
                     askInput.trim() && !askAiLoading
                       ? "bg-[#6aa5ff] hover:bg-[#4f91f7]"
                       : "cursor-not-allowed bg-slate-300 text-slate-500"
@@ -1396,7 +1415,7 @@ const Hero = () => {
                 </button>
               </form>
               {(askAiLoading || askAiResponse || askAiError) && (
-                <div className="mx-auto mt-4 w-full max-w-2xl rounded-[24px] border border-slate-300 bg-white p-4 text-left shadow-[0_12px_30px_rgba(15,23,42,0.08)]">
+                <div className="mx-auto mt-4 w-full max-w-2xl rounded-[24px] border border-slate-300 bg-white p-3 text-left shadow-[0_12px_30px_rgba(15,23,42,0.08)] sm:p-4">
                   <div className="flex items-start gap-3">
                     <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-white">
                       <img src={aiAvatar} alt="AI avatar" className="h-full w-full object-cover" />
@@ -1448,13 +1467,16 @@ const Hero = () => {
                 </div>
               )}
 
+              <p className="mx-auto mt-5 w-full max-w-[1240px] text-left text-xs font-medium uppercase tracking-[0.14em] text-slate-500 sm:text-sm">
+                Tap a section to explore
+              </p>
               <div className="mx-auto mt-7 grid w-full max-w-[1240px] grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3 lg:grid-cols-8">
                 {quickTabs.map((tab) => (
                   <button
                     key={tab.id}
                     type="button"
                     onClick={() => triggerTabWithAi(tab.id)}
-                    className={`flex h-[78px] flex-col items-center justify-center rounded-[18px] border bg-white px-3 py-2 transition ${
+                    className={`flex h-[72px] flex-col items-center justify-center rounded-[18px] border bg-white px-3 py-2 transition sm:h-[78px] ${
                       activeTab === tab.id || pendingTab === tab.id
                         ? "border-slate-400 shadow-[0_8px_20px_rgba(15,23,42,0.06)]"
                         : "border-slate-300/90 hover:border-slate-400"
@@ -1463,7 +1485,7 @@ const Hero = () => {
                     <span className={tab.color}>
                       <tab.icon />
                     </span>
-                    <span className="mt-1.5 text-[1.05rem] font-medium leading-none text-slate-700 sm:text-[1.15rem]">
+                    <span className="mt-1.5 text-[0.95rem] font-medium leading-none text-slate-700 sm:text-[1.1rem]">
                       {tab.label}
                     </span>
                   </button>
@@ -1476,7 +1498,7 @@ const Hero = () => {
       </div>
 
       {!isMeView && !isExpandedView && (
-        <p className="pointer-events-none absolute bottom-[-12px] left-1/2 -translate-x-1/2 select-none text-[5.2rem] font-black leading-none tracking-[0.065em] text-slate-300/20 sm:bottom-[-18px] sm:text-[10.8rem]">
+        <p className="pointer-events-none absolute bottom-[-8px] left-1/2 -translate-x-1/2 select-none text-[3.8rem] font-black leading-none tracking-[0.065em] text-slate-300/20 sm:bottom-[-18px] sm:text-[10.8rem]">
           Chaudhary
         </p>
       )}

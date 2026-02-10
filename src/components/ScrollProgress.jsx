@@ -53,7 +53,7 @@ export const ScrollToTop = () => {
       whileTap={{ scale: 0.9 }}
       transition={{ duration: 0.3 }}
       onClick={scrollToTop}
-      className="group fixed bottom-8 right-8 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-r from-sky-500 to-violet-500 text-white shadow-lg shadow-sky-500/30 transition-all hover:shadow-sky-500/50"
+      className="group fixed bottom-4 right-4 z-40 flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-sky-500 to-violet-500 text-white shadow-lg shadow-sky-500/30 transition-all hover:shadow-sky-500/50 sm:bottom-8 sm:right-8 sm:h-14 sm:w-14"
       aria-label="Scroll to top"
     >
       <motion.div
@@ -61,7 +61,7 @@ export const ScrollToTop = () => {
         transition={{ duration: 1.5, repeat: Infinity }}
       >
         <svg
-          className="h-6 w-6"
+          className="h-5 w-5 sm:h-6 sm:w-6"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"

@@ -14,7 +14,7 @@ const cardVariants = {
 
 const About = () => {
   return (
-    <section className="space-y-6 text-white">
+    <section className="space-y-5 text-white sm:space-y-6">
       <motion.p
         initial={{ opacity: 0, y: 10 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -34,21 +34,21 @@ const About = () => {
         Designing the backstage story.
       </motion.h2>
 
-      <div className="mt-12 grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
+      <div className="mt-8 grid gap-6 sm:mt-12 sm:gap-8 lg:grid-cols-[1.1fr_0.9fr]">
         <motion.div
           variants={cardVariants}
           initial="hidden"
           whileInView="show"
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="glass-panel p-8"
+          className="glass-panel p-5 sm:p-8"
         >
           <motion.p
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-lg text-slate-200"
+            className="text-[1rem] leading-relaxed text-slate-200 sm:text-lg"
           >
             I&apos;m a software engineer who treats the stack as a playground—
             blending interface craft, resilient infrastructure, and automation
@@ -56,7 +56,7 @@ const About = () => {
             full-stack web build, a data-heavy workflow, or a 3D moment, I
             obsess over clarity and longevity.
           </motion.p>
-          <ul className="mt-6 space-y-4 text-sm text-slate-300">
+          <ul className="mt-5 space-y-3 text-[0.9rem] leading-relaxed text-slate-300 sm:mt-6 sm:space-y-4 sm:text-sm">
             {[
               "Led React + cloud programs for organisations like Paramotor Digital Technology and IBM, balancing delightful UI with measurable uptime.",
               "React Native builds (Expo + RN CLI) are part of the daily rhythm, so mobile UX ships alongside web without redundant work.",
@@ -82,12 +82,12 @@ const About = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.8 }}
-            className="mt-8 flex flex-wrap gap-4"
+            className="mt-7 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:flex-wrap sm:gap-4"
           >
             <MagneticButton
               type="button"
               onClick={() => window.open(resume, "_blank")}
-              className="group relative inline-flex items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-r from-sky-500 to-violet-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-sky-500/30 transition-all hover:shadow-sky-500/50"
+              className="group relative inline-flex w-full items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-r from-sky-500 to-violet-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-sky-500/30 transition-all hover:shadow-sky-500/50 sm:w-auto"
             >
               <span className="relative z-10">Download resume</span>
               <div className="absolute inset-0 -z-0 bg-gradient-to-r from-violet-500 to-sky-500 opacity-0 transition-opacity group-hover:opacity-100" />
@@ -97,14 +97,14 @@ const About = () => {
               onClick={() =>
                 window.open("https://www.linkedin.com/in/ankitchaudhary1324/", "_blank")
               }
-              className="inline-flex items-center justify-center rounded-2xl border border-white/20 bg-white/5 px-6 py-3 text-sm font-semibold text-white/90 backdrop-blur-sm transition-all hover:border-sky-400/50 hover:bg-sky-400/10 hover:shadow-[0_0_30px_rgba(56,189,248,0.3)]"
+              className="inline-flex w-full items-center justify-center rounded-2xl border border-white/20 bg-white/5 px-6 py-3 text-sm font-semibold text-white/90 backdrop-blur-sm transition-all hover:border-sky-400/50 hover:bg-sky-400/10 hover:shadow-[0_0_30px_rgba(56,189,248,0.3)] sm:w-auto"
             >
               LinkedIn
             </MagneticButton>
             <MagneticButton
               type="button"
               onClick={() => window.open("https://github.com/ankit1324", "_blank")}
-              className="inline-flex items-center justify-center rounded-2xl border border-white/20 bg-white/5 px-6 py-3 text-sm font-semibold text-white/90 backdrop-blur-sm transition-all hover:border-violet-400/50 hover:bg-violet-400/10 hover:shadow-[0_0_30px_rgba(139,92,246,0.3)]"
+              className="inline-flex w-full items-center justify-center rounded-2xl border border-white/20 bg-white/5 px-6 py-3 text-sm font-semibold text-white/90 backdrop-blur-sm transition-all hover:border-violet-400/50 hover:bg-violet-400/10 hover:shadow-[0_0_30px_rgba(139,92,246,0.3)] sm:w-auto"
             >
               GitHub
             </MagneticButton>
@@ -117,20 +117,20 @@ const About = () => {
           whileInView="show"
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="space-y-6"
+          className="space-y-5 sm:space-y-6"
         >
           <div className="glass-panel overflow-hidden p-2">
             <div className="rounded-[22px] border border-white/10">
               <img
                 src={profilepic}
                 alt="Ankit Chaudhary"
-                className="h-[360px] w-full rounded-[22px] object-cover"
+                className="h-[280px] w-full rounded-[22px] object-cover sm:h-[360px]"
                 loading="lazy"
               />
             </div>
           </div>
-          <div className="glass-panel p-6">
-            <p className="text-xs uppercase tracking-[0.5em] text-slate-400">
+          <div className="glass-panel p-5 sm:p-6">
+            <p className="text-[0.65rem] uppercase tracking-[0.26em] text-slate-400 sm:text-xs sm:tracking-[0.5em]">
               Focus areas
             </p>
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
@@ -142,16 +142,16 @@ const About = () => {
                   viewport={{ once: true }}
                   transition={{ duration: 0.3, delay: index * 0.1 }}
                   whileHover={{ scale: 1.05, y: -5 }}
-                  className="flex items-center gap-4 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 transition-all hover:border-sky-400/50 hover:bg-sky-400/5 hover:shadow-[0_10px_30px_rgba(56,189,248,0.2)]"
+                  className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-3 py-3 transition-all hover:border-sky-400/50 hover:bg-sky-400/5 hover:shadow-[0_10px_30px_rgba(56,189,248,0.2)] sm:gap-4 sm:px-4"
                 >
                   <motion.img
                     src={service.icon}
                     alt={service.title}
-                    className="h-10 w-10"
+                    className="h-8 w-8 sm:h-10 sm:w-10"
                     whileHover={{ rotate: 360 }}
                     transition={{ duration: 0.6 }}
                   />
-                  <p className="text-sm font-semibold text-white">
+                  <p className="text-xs font-semibold text-white sm:text-sm">
                     {service.title}
                   </p>
                 </motion.div>

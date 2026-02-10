@@ -122,15 +122,15 @@ const Contact = () => {
         />
       )}
 
-      <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr]">
+      <div className="grid gap-6 sm:gap-10 lg:grid-cols-[1.1fr_0.9fr]">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="glass-panel rounded-3xl border border-white/10 bg-white/5 p-8"
+          className="glass-panel rounded-3xl border border-white/10 bg-white/5 p-5 sm:p-8"
         >
-          <div className="flex flex-wrap items-start justify-between gap-4">
+          <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:flex-wrap">
             <div>
               <motion.p
                 initial={{ opacity: 0, y: 10 }}
@@ -155,7 +155,7 @@ const Contact = () => {
               href="tel:+919805531236"
               whileHover={{ y: -3, scale: 1.02 }}
               transition={{ duration: 0.2 }}
-              className="rounded-2xl border border-white/20 px-4 py-2 text-sm font-semibold text-white/80 transition hover:border-white/40"
+              className="w-full rounded-2xl border border-white/20 px-4 py-2 text-center text-sm font-semibold text-white/80 transition hover:border-white/40 sm:w-auto"
             >
               +91 98055 31236
             </motion.a>
@@ -165,7 +165,7 @@ const Contact = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.4, delay: 0.12 }}
-            className="mt-4 text-sm text-slate-400"
+            className="mt-4 text-xs leading-relaxed text-slate-400 sm:text-sm"
           >
             Tell me about the product, team, or crazy idea you&apos;re building.
             I usually respond within 24 hours.
@@ -177,13 +177,13 @@ const Contact = () => {
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, amount: 0.35 }}
-            className="mt-10 space-y-6"
+            className="mt-8 space-y-4 sm:mt-10 sm:space-y-6"
           >
-            <motion.div variants={itemReveal} className="grid gap-6 md:grid-cols-2">
+            <motion.div variants={itemReveal} className="grid gap-4 sm:gap-6 md:grid-cols-2">
               <motion.label
                 variants={itemReveal}
                 whileHover={{ y: -2 }}
-                className="flex flex-col text-sm font-semibold text-slate-200"
+                className="flex flex-col text-xs font-semibold text-slate-200 sm:text-sm"
               >
                 Name
                 <input
@@ -192,13 +192,13 @@ const Contact = () => {
                   value={form.name}
                   onChange={handleChange}
                   placeholder="Who should I thank?"
-                  className="mt-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-base text-white placeholder:text-slate-500 focus:border-sky-400 focus:outline-none"
+                  className="mt-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white placeholder:text-slate-500 focus:border-sky-400 focus:outline-none sm:py-3 sm:text-base"
                 />
               </motion.label>
               <motion.label
                 variants={itemReveal}
                 whileHover={{ y: -2 }}
-                className="flex flex-col text-sm font-semibold text-slate-200"
+                className="flex flex-col text-xs font-semibold text-slate-200 sm:text-sm"
               >
                 Email
                 <input
@@ -207,23 +207,23 @@ const Contact = () => {
                   value={form.email}
                   onChange={handleChange}
                   placeholder="your@email.com"
-                  className="mt-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-base text-white placeholder:text-slate-500 focus:border-sky-400 focus:outline-none"
+                  className="mt-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white placeholder:text-slate-500 focus:border-sky-400 focus:outline-none sm:py-3 sm:text-base"
                 />
               </motion.label>
             </motion.div>
             <motion.label
               variants={itemReveal}
               whileHover={{ y: -2 }}
-              className="flex flex-col text-sm font-semibold text-slate-200"
+              className="flex flex-col text-xs font-semibold text-slate-200 sm:text-sm"
             >
               Message
               <textarea
-                rows={6}
+                rows={5}
                 name="message"
                 value={form.message}
                 onChange={handleChange}
                 placeholder="Tell me about the vision, the problems, or the vibe you’d like to create."
-                className="mt-2 rounded-3xl border border-white/10 bg-white/5 px-4 py-4 text-base text-white placeholder:text-slate-500 focus:border-sky-400 focus:outline-none"
+                className="mt-2 rounded-3xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-slate-500 focus:border-sky-400 focus:outline-none sm:py-4 sm:text-base"
               />
             </motion.label>
             <motion.button
@@ -232,7 +232,7 @@ const Contact = () => {
               variants={itemReveal}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="inline-flex w-full items-center justify-center gap-2 rounded-3xl bg-gradient-to-r from-sky-500 to-violet-500 px-6 py-4 text-sm font-semibold text-white shadow-lg shadow-sky-500/30 transition disabled:opacity-60 disabled:cursor-not-allowed"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-sky-500 to-violet-500 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-sky-500/30 transition disabled:cursor-not-allowed disabled:opacity-60 sm:rounded-3xl sm:py-4"
             >
               {loading ? (
                 <>
@@ -268,12 +268,12 @@ const Contact = () => {
           transition={{ duration: 0.6, delay: 0.1 }}
           className="glass-panel overflow-hidden rounded-3xl border border-white/10 bg-white/5"
         >
-          <div className="flex items-center justify-between border-b border-white/10 px-6 py-5">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 px-4 py-4 sm:px-6 sm:py-5">
             <div>
-              <p className="text-xs uppercase tracking-[0.4em] text-slate-400">
+              <p className="text-[0.65rem] uppercase tracking-[0.24em] text-slate-400 sm:text-xs sm:tracking-[0.4em]">
                 Availability
               </p>
-              <p className="text-base font-semibold text-white">
+              <p className="text-sm font-semibold text-white sm:text-base">
                 Open for new collaborations
               </p>
             </div>
@@ -281,7 +281,7 @@ const Contact = () => {
               GMT+5:30
             </div>
           </div>
-          <div className="h-[420px] w-full">
+          <div className="h-[300px] w-full sm:h-[420px]">
             <EarthCanvas />
           </div>
           <motion.div
@@ -289,12 +289,12 @@ const Contact = () => {
             initial="hidden"
             whileInView="show"
             viewport={{ once: true }}
-            className="grid gap-4 border-t border-white/10 px-6 py-6 text-sm text-slate-300"
+            className="grid gap-4 border-t border-white/10 px-4 py-5 text-xs text-slate-300 sm:px-6 sm:py-6 sm:text-sm"
           >
             <motion.div
               variants={itemReveal}
               whileHover={{ x: 4 }}
-              className="flex items-center justify-between"
+              className="flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:justify-between"
             >
               <span>Email</span>
               <a
@@ -307,7 +307,7 @@ const Contact = () => {
             <motion.div
               variants={itemReveal}
               whileHover={{ x: 4 }}
-              className="flex items-center justify-between"
+              className="flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:justify-between"
             >
               <span>Current base</span>
               <p className="font-semibold text-white">
@@ -317,7 +317,7 @@ const Contact = () => {
             <motion.div
               variants={itemReveal}
               whileHover={{ x: 4 }}
-              className="flex items-center justify-between"
+              className="flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:justify-between"
             >
               <span>Response time</span>
               <p className="font-semibold text-white">~24 hours</p>
