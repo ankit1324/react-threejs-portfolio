@@ -263,6 +263,15 @@ const Hero = () => {
   const [pendingTab, setPendingTab] = useState(null);
   const [isAiThinking, setIsAiThinking] = useState(false);
   const [projectStartIndex, setProjectStartIndex] = useState(0);
+  const [isMobileScreen, setIsMobileScreen] = useState(() => typeof window !== 'undefined' && window.innerWidth < 640);
+
+  useEffect(() => {
+    const mql = window.matchMedia('(max-width: 639px)');
+    const handler = (e) => setIsMobileScreen(e.matches);
+    setIsMobileScreen(mql.matches);
+    mql.addEventListener('change', handler);
+    return () => mql.removeEventListener('change', handler);
+  }, []);
   const [gifLoaded, setGifLoaded] = useState(false);
   const [isAvatarAnimating, setIsAvatarAnimating] = useState(false);
   const [gifRunId, setGifRunId] = useState(0);
@@ -335,10 +344,11 @@ const Hero = () => {
   const visibleProjectCount = Math.min(3, projects.length);
   const visibleProjects = useMemo(() => {
     if (!projects.length) return [];
+    if (isMobileScreen) return projects;
     return Array.from({ length: visibleProjectCount }, (_, offset) => {
       return projects[(projectStartIndex + offset) % projects.length];
     });
-  }, [projectStartIndex, visibleProjectCount]);
+  }, [projectStartIndex, visibleProjectCount, isMobileScreen]);
 
   const moveProjectsLeft = () => {
     setProjectStartIndex((value) => {
@@ -710,8 +720,8 @@ const Hero = () => {
                               animate={{ opacity: 1, y: 0, scale: 1 }}
                               transition={{ duration: 0.28, delay: index * 0.03 }}
                               className={`max-w-[92%] rounded-2xl px-4 py-3 text-sm leading-relaxed shadow-sm ${message.role === "assistant"
-                                  ? "mr-auto bg-slate-100 text-slate-800"
-                                  : "ml-auto bg-gradient-to-r from-sky-500 to-blue-500 text-white"
+                                ? "mr-auto bg-slate-100 text-slate-800"
+                                : "ml-auto bg-gradient-to-r from-sky-500 to-blue-500 text-white"
                                 }`}
                             >
                               {message.text}
@@ -747,8 +757,8 @@ const Hero = () => {
                               type="submit"
                               disabled={!fullChatInput.trim() || askAiLoading}
                               className={`inline-flex rounded-xl px-4 py-2 text-sm font-semibold text-white transition ${fullChatInput.trim() && !askAiLoading
-                                  ? "bg-gradient-to-r from-sky-500 to-blue-500 hover:brightness-95"
-                                  : "cursor-not-allowed bg-slate-300 text-slate-500"
+                                ? "bg-gradient-to-r from-sky-500 to-blue-500 hover:brightness-95"
+                                : "cursor-not-allowed bg-slate-300 text-slate-500"
                                 }`}
                             >
                               Send
@@ -912,24 +922,26 @@ const Hero = () => {
                     })}
                   </div>
 
-                  <div className="mt-6 flex justify-end gap-3">
-                    <button
-                      type="button"
-                      onClick={moveProjectsLeft}
-                      className="group inline-flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-white text-xl text-slate-400 shadow-sm transition-all hover:border-slate-300 hover:text-slate-700 hover:shadow-md"
-                      aria-label="Previous projects"
-                    >
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform group-hover:-translate-x-0.5"><polyline points="15 18 9 12 15 6" /></svg>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={moveProjectsRight}
-                      className="group inline-flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-white text-xl text-slate-400 shadow-sm transition-all hover:border-slate-300 hover:text-slate-700 hover:shadow-md"
-                      aria-label="Next projects"
-                    >
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform group-hover:translate-x-0.5"><polyline points="9 18 15 12 9 6" /></svg>
-                    </button>
-                  </div>
+                  {!isMobileScreen && (
+                    <div className="mt-6 flex justify-end gap-3">
+                      <button
+                        type="button"
+                        onClick={moveProjectsLeft}
+                        className="group inline-flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-white text-xl text-slate-400 shadow-sm transition-all hover:border-slate-300 hover:text-slate-700 hover:shadow-md"
+                        aria-label="Previous projects"
+                      >
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform group-hover:-translate-x-0.5"><polyline points="15 18 9 12 15 6" /></svg>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={moveProjectsRight}
+                        className="group inline-flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-white text-xl text-slate-400 shadow-sm transition-all hover:border-slate-300 hover:text-slate-700 hover:shadow-md"
+                        aria-label="Next projects"
+                      >
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform group-hover:translate-x-0.5"><polyline points="9 18 15 12 9 6" /></svg>
+                      </button>
+                    </div>
+                  )}
 
                   <p className="mt-8 text-[1.2rem] leading-relaxed text-slate-800 sm:text-[1.45rem]">
                     I&apos;ve got some exciting projects under my belt. Here are a few highlights:
@@ -1492,8 +1504,8 @@ const Hero = () => {
                   type="submit"
                   disabled={!askInput.trim() || askAiLoading}
                   className={`inline-flex h-10 w-10 items-center justify-center rounded-full text-lg text-white transition sm:h-12 sm:w-12 sm:text-xl ${askInput.trim() && !askAiLoading
-                      ? "bg-[#6aa5ff] hover:bg-[#4f91f7]"
-                      : "cursor-not-allowed bg-slate-300 text-slate-500"
+                    ? "bg-[#6aa5ff] hover:bg-[#4f91f7]"
+                    : "cursor-not-allowed bg-slate-300 text-slate-500"
                     }`}
                   aria-label="Submit question"
                 >
@@ -1517,8 +1529,8 @@ const Hero = () => {
                       )}
                       <div
                         className={`mt-3 rounded-2xl px-4 py-3 text-[0.95rem] leading-relaxed whitespace-pre-line ${askAiError
-                            ? "bg-rose-50 text-rose-700"
-                            : "bg-slate-100 text-slate-800"
+                          ? "bg-rose-50 text-rose-700"
+                          : "bg-slate-100 text-slate-800"
                           }`}
                       >
                         {askAiLoading
@@ -1562,8 +1574,8 @@ const Hero = () => {
                     type="button"
                     onClick={() => triggerTabWithAi(tab.id)}
                     className={`flex h-[72px] flex-col items-center justify-center rounded-[18px] border bg-white px-3 py-2 transition sm:h-[78px] ${activeTab === tab.id || pendingTab === tab.id
-                        ? "border-slate-400 shadow-[0_8px_20px_rgba(15,23,42,0.06)]"
-                        : "border-slate-300/90 hover:border-slate-400"
+                      ? "border-slate-400 shadow-[0_8px_20px_rgba(15,23,42,0.06)]"
+                      : "border-slate-300/90 hover:border-slate-400"
                       }`}
                   >
                     <span className={tab.color}>
