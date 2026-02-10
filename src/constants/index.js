@@ -6,17 +6,13 @@ import {
   javascript,
   java,
   html,
-  css,
   reactjs,
-  ubuntu,
   tailwind,
   postgresql,
-  git,
   otu,
   rhhs,
   wonderland,
   mackenziehealth,
-  privcurity,
   staples,
   google,
   whmis,
@@ -28,7 +24,6 @@ import {
   knifethrowimage,
   pythonanalysis,
   password_generator,
-  // wordsearch,
   powershell,
   cisco,
   connectwise,
@@ -44,45 +39,12 @@ import {
   premiere,
   cinema4d,
   blender,
-  connectwisecert,
-  awsdbcert,
   financialflowimage,
   enterpriseapitester,
   github,
   mongodb,
   docker,
 } from "../assets";
-
-export const navLinks = [
-  {
-    id: "about",
-    title: "About",
-  },
-  {
-    id: "education",
-    title: "Education",
-  },
-  {
-    id: "work",
-    title: "Work",
-  },
-  {
-    id: "extracurricular",
-    title: "Certifications",
-  },
-  {
-    id: "skills",
-    title: "Skills",
-  },
-  {
-    id: "projects",
-    title: "Projects",
-  },
-  {
-    id: "contact",
-    title: "Contact",
-  },
-];
 
 const services = [
   {
@@ -540,33 +502,6 @@ const projects = [
   },
 ];
 
-const testimonials = [
-  {
-    testimonial:
-      "I highly recommend Sunny for his outstanding technical proficiency and professional approach as a System Support specialist at Mackenzie Hospital. His deep knowledge of iPad systems and troubleshooting abilities were instrumental in ensuring seamless operations and user satisfaction. Sunny's proactive attitude and problem-solving skills made him a reliable asset to our team, and he consistently exceeded expectations in resolving complex issues. I have no hesitation in endorsing him for any tech-related position, as I am confident he will excel in any challenge he takes on.",
-    name: "Feda Abukhadrah, BIT | SaaS | Health Tech | MDM | ABM | POS | ITIL®V4 | CompTIA A+",
-    designation: "Senior Service Desk Specialist",
-    company: "Px Solutions LTD.",
-    image: "https://randomuser.me/api/portraits/women/4.jpg",
-  },
-  {
-    testimonial:
-      "Ankit Chaudhary's expertise in the technological domain is truly remarkable. Proficient in programming languages like Java, Python, and C++, and highly skilled in Microsoft's suite of tools, Sunny's grasp of networking concepts is extensive. What sets him apart is his experience in handling over 1000 devices remotely and on-site, along with a successful track record in troubleshooting and deploying various software and hardware upgrades. His dedication to tackling complex challenges, grounded in a strong foundation in software design and a rich academic background in computer science, positions Sunny as a valuable asset to any tech-driven team.",
-    name: "Sanjay Sharma, MBA, CISSP, CISA, PMP®",
-    designation: "Senior Vice-President and Head of Cybersecurity Services",
-    company: "Pathway Communications / ex-Toronto Hydro",
-    image: "https://randomuser.me/api/portraits/men/5.jpg",
-  },
-  {
-    testimonial:
-      "Sunny's proficiency in data entry was impeccable, displaying meticulous attention to detail and accuracy. His commitment to maintaining organized and error-free records significantly improved our operational efficiency. In customer service, Sunny's phone etiquette was truly commendable. He communicated with a warm and professional demeanour, leaving customers with a positive impression and ensuring their needs were met. His ability to multitask and handle multiple customers simultaneously was impressive, showcasing his excellent time management and interpersonal skills. Sunny's dedication to his role and adeptness in data entry, customer service, and managing simultaneous customer interactions made him a valuable asset to our team at Lazer Runner.",
-    name: "Michelle Ilizirov",
-    designation: "Manager",
-    company: "Lazer Runner",
-    image: "https://randomuser.me/api/portraits/women/6.jpg",
-  },
-];
-
 export {
   services,
   technologies,
@@ -577,5 +512,4 @@ export {
   extracurricular,
   projects,
   education,
-  testimonials
 };
