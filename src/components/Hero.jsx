@@ -167,17 +167,17 @@ const tileQueryPrompts = {
 };
 
 const aiDelayByTab = {
-  me: 900,
-  education: 1300,
-  experience: 1450,
-  contact: 1200,
-  certifications: 1650,
-  resume: 1250,
-  projects: 2000,
-  skills: 2100,
+  me: 1800,
+  education: 2400,
+  experience: 2600,
+  contact: 2200,
+  certifications: 2800,
+  resume: 2300,
+  projects: 3300,
+  skills: 3400,
 };
 
-const generatingResponseText = "Generating response...";
+const previewThinkingText = "Thinking...";
 const AI_CHAT_TAB_ID = "ai-chat";
 const GEMINI_ENDPOINT =
   "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
@@ -188,12 +188,6 @@ Anchor replies to Ankit's strengths: React, React Native, TypeScript, Node.js, T
 If asked about collaboration, suggest contacting through the portfolio contact section or LinkedIn.
 If information is not available in portfolio context, say that clearly and offer a practical next step.
 `;
-
-const fakeThinkingSteps = [
-  "Understanding your request",
-  "Searching profile context",
-  "Crafting the best answer",
-];
 
 const buildGeminiPrompt = (question, historyMessages = []) => {
   const recentHistory = historyMessages
@@ -268,8 +262,6 @@ const Hero = () => {
   const [activeTab, setActiveTab] = useState(null);
   const [pendingTab, setPendingTab] = useState(null);
   const [isAiThinking, setIsAiThinking] = useState(false);
-  const [typedGeneratingText, setTypedGeneratingText] = useState("");
-  const [thinkingStepIndex, setThinkingStepIndex] = useState(0);
   const [projectStartIndex, setProjectStartIndex] = useState(0);
   const [gifLoaded, setGifLoaded] = useState(false);
   const [isAvatarAnimating, setIsAvatarAnimating] = useState(false);
@@ -483,43 +475,6 @@ const Hero = () => {
   );
 
   useEffect(() => {
-    if (!isAiThinking) {
-      setTypedGeneratingText("");
-      return undefined;
-    }
-
-    let cursor = 0;
-    setTypedGeneratingText("");
-
-    const typeTimer = setInterval(() => {
-      cursor += 1;
-      setTypedGeneratingText(generatingResponseText.slice(0, cursor));
-      if (cursor >= generatingResponseText.length) {
-        clearInterval(typeTimer);
-      }
-    }, 50);
-
-    return () => clearInterval(typeTimer);
-  }, [isAiThinking, pendingTab]);
-
-  useEffect(() => {
-    if (!isAiThinking) {
-      setThinkingStepIndex(0);
-      return undefined;
-    }
-
-    setThinkingStepIndex(0);
-
-    const stepTimer = setInterval(() => {
-      setThinkingStepIndex((prev) =>
-        Math.min(prev + 1, fakeThinkingSteps.length - 1),
-      );
-    }, 460);
-
-    return () => clearInterval(stepTimer);
-  }, [isAiThinking, pendingTab]);
-
-  useEffect(() => {
     if (activeTab !== AI_CHAT_TAB_ID) return;
     fullChatScrollRef.current?.scrollTo({
       top: fullChatScrollRef.current.scrollHeight,
@@ -641,42 +596,8 @@ const Hero = () => {
                 </motion.p>
 
                 <p className="mt-5 text-sm font-medium tracking-wide text-slate-600">
-                  {typedGeneratingText}
-                  <motion.span
-                    aria-hidden="true"
-                    animate={{ opacity: [0.2, 1, 0.2] }}
-                    transition={{ duration: 1, repeat: Infinity, ease: "easeInOut" }}
-                    className="ml-1 inline-block"
-                  >
-                    |
-                  </motion.span>
+                  {previewThinkingText}
                 </p>
-
-                <div className="mx-auto mt-7 grid max-w-md gap-2.5 text-left">
-                  {fakeThinkingSteps.map((step, index) => {
-                    const isComplete = index < thinkingStepIndex;
-                    const isCurrent = index === thinkingStepIndex;
-
-                    return (
-                      <motion.div
-                        key={step}
-                        initial={{ opacity: 0, x: -6 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.3, delay: index * 0.08 }}
-                        className={`flex items-center gap-2 rounded-xl border px-3 py-2 text-sm ${
-                          isComplete || isCurrent
-                            ? "border-sky-300 bg-sky-50 text-slate-700"
-                            : "border-slate-200 bg-white/70 text-slate-500"
-                        }`}
-                      >
-                        <span className="inline-flex h-4 w-4 items-center justify-center text-xs">
-                          {isComplete ? "✓" : isCurrent ? "…" : "○"}
-                        </span>
-                        <span>{step}</span>
-                      </motion.div>
-                    );
-                  })}
-                </div>
 
                 <div className="mt-8 flex items-center justify-center gap-2">
                   {[0, 1, 2].map((dot) => (
