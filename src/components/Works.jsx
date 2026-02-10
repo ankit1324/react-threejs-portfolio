@@ -5,110 +5,197 @@ import { styles } from "../styles";
 import { SectionWrapper } from "../hoc";
 import { projects } from "../constants";
 import { github } from "../assets";
-import GlowCard from "./GlowCard";
-import MagneticButton from "./MagneticButton";
 
+/* ── Decorative SVG Components ── */
+const CircleDecoration = ({ className }) => (
+  <svg
+    className={`pointer-events-none absolute ${className}`}
+    viewBox="0 0 100 100"
+    fill="none"
+  >
+    <circle cx="50" cy="50" r="45" stroke="currentColor" strokeWidth="0.8" strokeDasharray="4 6" />
+    <circle cx="50" cy="50" r="30" stroke="currentColor" strokeWidth="0.6" strokeDasharray="2 4" />
+    <circle cx="50" cy="50" r="12" fill="currentColor" opacity="0.08" />
+  </svg>
+);
+
+const DiamondDecoration = ({ className }) => (
+  <svg
+    className={`pointer-events-none absolute ${className}`}
+    viewBox="0 0 80 80"
+    fill="none"
+  >
+    <rect x="15" y="15" width="50" height="50" rx="6" stroke="currentColor" strokeWidth="0.8" strokeDasharray="3 5" transform="rotate(20 40 40)" />
+    <rect x="25" y="25" width="30" height="30" rx="4" stroke="currentColor" strokeWidth="0.6" strokeDasharray="2 3" transform="rotate(35 40 40)" />
+  </svg>
+);
+
+const DotGrid = ({ className }) => (
+  <svg
+    className={`pointer-events-none absolute ${className}`}
+    viewBox="0 0 60 30"
+    fill="currentColor"
+  >
+    {[0, 1, 2].map((row) =>
+      [0, 1, 2, 3, 4, 5].map((col) => (
+        <circle key={`${row}-${col}`} cx={5 + col * 10} cy={5 + row * 10} r="1.2" />
+      ))
+    )}
+  </svg>
+);
+
+const HexDecoration = ({ className, color }) => (
+  <svg
+    className={`pointer-events-none absolute ${className}`}
+    viewBox="0 0 60 60"
+    fill="none"
+  >
+    <polygon
+      points="30,3 54,17 54,43 30,57 6,43 6,17"
+      stroke={color}
+      strokeWidth="0.8"
+      strokeDasharray="4 4"
+      opacity="0.3"
+    />
+    <polygon
+      points="30,12 46,21 46,39 30,48 14,39 14,21"
+      stroke={color}
+      strokeWidth="0.5"
+      opacity="0.15"
+    />
+  </svg>
+);
+
+/* ── Color schemes for cards ── */
+const accentColors = [
+  { from: "#3b82f6", to: "#06b6d4", light: "rgba(59,130,246,0.07)", border: "rgba(59,130,246,0.2)", glow: "rgba(59,130,246,0.12)" },
+  { from: "#8b5cf6", to: "#ec4899", light: "rgba(139,92,246,0.07)", border: "rgba(139,92,246,0.2)", glow: "rgba(139,92,246,0.12)" },
+  { from: "#f59e0b", to: "#ef4444", light: "rgba(245,158,11,0.07)", border: "rgba(245,158,11,0.2)", glow: "rgba(245,158,11,0.12)" },
+  { from: "#10b981", to: "#3b82f6", light: "rgba(16,185,129,0.07)", border: "rgba(16,185,129,0.2)", glow: "rgba(16,185,129,0.12)" },
+  { from: "#ec4899", to: "#8b5cf6", light: "rgba(236,72,153,0.07)", border: "rgba(236,72,153,0.2)", glow: "rgba(236,72,153,0.12)" },
+];
+
+/* ── Project Card Component ── */
 const ProjectCard = ({ project, index }) => {
-  const [isHovered, setIsHovered] = useState(false);
-  const visibleTags = project.tags.slice(0, 2);
-  const remainingTagCount = Math.max(project.tags.length - visibleTags.length, 0);
+  const accent = accentColors[index % accentColors.length];
 
   return (
-    <GlowCard
-      glowColor="sky"
-      className="glass-panel group relative flex flex-col overflow-hidden rounded-[26px] border border-white/15 bg-gradient-to-b from-white/[0.09] to-white/[0.04] p-3.5 transition-all hover:border-white/30 sm:rounded-3xl sm:p-4"
+    <motion.article
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{
+        duration: 0.55,
+        delay: index * 0.1,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+      className="project-card-v2 group"
     >
-      <motion.article
-        initial={{ opacity: 0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5, delay: index * 0.1 }}
-        onHoverStart={() => setIsHovered(true)}
-        onHoverEnd={() => setIsHovered(false)}
-        className="relative flex flex-col"
-      >
-        <div aria-hidden className="pointer-events-none absolute -left-16 -top-16 h-44 w-44 rounded-full bg-sky-500/20 blur-3xl sm:hidden" />
-        <div className="relative h-44 w-full overflow-hidden rounded-2xl border border-white/10 sm:h-44">
-          <motion.img
-            src={project.image}
-            alt={project.name}
-            className="h-full w-full object-cover"
-            loading="lazy"
-            animate={{ scale: isHovered ? 1.1 : 1 }}
-            transition={{ duration: 0.4 }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/25 via-slate-950/55 to-slate-950/90" />
-          <div className="absolute left-3 top-3 rounded-full border border-white/20 bg-black/45 px-2.5 py-1 text-[0.58rem] font-semibold uppercase tracking-[0.13em] text-white/90 backdrop-blur-sm sm:text-[0.62rem]">
-            Featured
-          </div>
-          <div className="absolute right-3 top-3 rounded-full border border-white/20 bg-black/45 px-2.5 py-1 text-[0.58rem] font-semibold text-white/90 backdrop-blur-sm sm:text-[0.62rem]">
-            {project.tags.length} Tech
-          </div>
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: isHovered ? 1 : 0, y: isHovered ? 0 : 10 }}
-            transition={{ duration: 0.3 }}
-            className="absolute inset-0 hidden items-center justify-center bg-slate-950/60 backdrop-blur-sm sm:flex"
-          >
-            <p className="text-xs font-semibold text-white">View Details</p>
-          </motion.div>
-          <div className="absolute bottom-3 left-3 right-3 flex flex-wrap gap-1.5">
-            {visibleTags.map((tag) => (
-              <span
-                key={`${project.name}-${tag.name}`}
-                className="rounded-full border border-white/20 bg-black/40 px-2.5 py-1 text-[0.65rem] text-white backdrop-blur-sm"
-              >
-                #{tag.name}
-              </span>
-            ))}
-            {remainingTagCount > 0 && (
-              <span className="rounded-full border border-white/20 bg-black/40 px-2.5 py-1 text-[0.65rem] text-white/90 backdrop-blur-sm">
-                +{remainingTagCount}
-              </span>
-            )}
+      {/* Decorative SVGs */}
+      <CircleDecoration className="-right-5 -top-5 h-24 w-24 text-white/20 transition-all duration-500 group-hover:text-white/40" />
+      <DiamondDecoration className="-bottom-3 -left-3 h-16 w-16 text-white/15 transition-all duration-500 group-hover:text-white/30" />
+      <HexDecoration className="-right-2 bottom-16 h-12 w-12" color={accent.from} />
+
+      {/* Top accent gradient line */}
+      <div
+        className="project-card-accent-line"
+        style={{ background: `linear-gradient(90deg, ${accent.from}, ${accent.to})` }}
+      />
+
+      {/* Image Section */}
+      <div className="project-card-image-wrap">
+        <img
+          src={project.image}
+          alt={project.name}
+          className="project-card-img"
+          loading="lazy"
+        />
+        {/* Light overlay — doesn't hide the image */}
+        <div className="project-card-img-overlay" />
+
+        {/* Tech badge */}
+        <div className="project-card-tech-badge">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+            <circle cx="5" cy="5" r="4" fill={accent.from} opacity="0.85" />
+            <circle cx="5" cy="5" r="2" fill="white" opacity="0.5" />
+          </svg>
+          <span>{project.tags?.[0]?.name || "Project"}</span>
+        </div>
+
+        {/* Project number */}
+        <div className="project-card-number">
+          {String(index + 1).padStart(2, "0")}
+        </div>
+
+        {/* Hover preview */}
+        <div className="project-card-hover-preview">
+          <div className="project-card-hover-pill">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            View Project
           </div>
         </div>
-        <div className="mt-4 flex flex-col gap-2.5">
-          <div>
-            <h3 className="text-[1.02rem] font-semibold leading-snug text-white transition-colors group-hover:text-sky-400 sm:text-xl">
-              {project.name}
-            </h3>
-            <p className="mt-1.5 text-[0.78rem] uppercase tracking-[0.15em] text-slate-400 sm:hidden">
-              Built for real-world usage
-            </p>
-            <p className="mt-1.5 text-xs leading-relaxed text-slate-300 line-clamp-3 sm:line-clamp-2 sm:text-sm">
-              {project.description}
-            </p>
-          </div>
-          <div className="mt-1 grid grid-cols-1 gap-2 sm:flex sm:flex-wrap">
-            {project.live_project_link && (
-              <MagneticButton
-                type="button"
-                onClick={() => window.open(project.live_project_link, "_blank")}
-                className="group relative inline-flex w-full items-center justify-center gap-1.5 overflow-hidden rounded-xl bg-gradient-to-r from-sky-500 to-violet-500 px-3 py-2 text-xs font-semibold text-white shadow-lg shadow-sky-500/20 transition-all hover:shadow-sky-500/40 sm:w-auto sm:flex-1 sm:py-1.5"
-              >
-                <span className="relative z-10 flex items-center gap-2">
-                  View Live
-                  <span aria-hidden="true">↗</span>
-                </span>
-                <div className="absolute inset-0 -z-0 bg-gradient-to-r from-violet-500 to-pink-500 opacity-0 transition-opacity group-hover:opacity-100" />
-              </MagneticButton>
-            )}
-            <MagneticButton
-              type="button"
-              onClick={() => window.open(project.source_code_link, "_blank")}
-              className="inline-flex w-full items-center justify-center gap-1.5 rounded-xl border border-white/20 bg-white/5 px-3 py-2 text-xs font-semibold text-white/90 backdrop-blur-sm transition-all hover:border-white/40 hover:bg-white/10 sm:w-auto sm:flex-1 sm:py-1.5"
+      </div>
+
+      {/* Content Section */}
+      <div className="project-card-body">
+        <DotGrid className="right-3 top-1 h-6 w-14 text-white/10" />
+
+        {/* Title */}
+        <h3 className="project-card-title">{project.name}</h3>
+
+        {/* Description */}
+        <p className="project-card-desc">{project.description}</p>
+
+        {/* Tags */}
+        <div className="project-card-tags">
+          {project.tags.map((tag) => (
+            <span
+              key={`${project.name}-${tag.name}`}
+              className="project-card-tag"
+              style={{
+                background: accent.light,
+                color: accent.from,
+                borderColor: accent.border,
+              }}
             >
-              <img src={github} alt="GitHub" className="h-4 w-4" />
-              Source
-            </MagneticButton>
-          </div>
+              {tag.name}
+            </span>
+          ))}
         </div>
-      </motion.article>
-    </GlowCard>
+
+        {/* Buttons */}
+        <div className="project-card-btns">
+          {project.live_project_link && (
+            <button
+              onClick={() => window.open(project.live_project_link, "_blank")}
+              className="project-card-btn-primary"
+              style={{ background: `linear-gradient(135deg, ${accent.from}, ${accent.to})` }}
+            >
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                <polyline points="15 3 21 3 21 9" />
+                <line x1="10" y1="14" x2="21" y2="3" />
+              </svg>
+              Live Demo
+            </button>
+          )}
+          <button
+            onClick={() => window.open(project.source_code_link, "_blank")}
+            className="project-card-btn-secondary"
+          >
+            <img src={github} alt="GitHub" className="h-4 w-4 brightness-200" />
+            Source Code
+          </button>
+        </div>
+      </div>
+    </motion.article>
   );
 };
 
+/* ── Works Section ── */
 const Works = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTag, setSelectedTag] = useState("all");
@@ -123,83 +210,102 @@ const Works = () => {
 
   const filteredProjects = useMemo(() => {
     return projects.filter((project) => {
-      const matchesSearch = project.name
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
+      const matchesSearch =
+        project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         project.description.toLowerCase().includes(searchTerm.toLowerCase());
-      
-      const matchesTag = selectedTag === "all" || 
+      const matchesTag =
+        selectedTag === "all" ||
         project.tags.some((tag) => tag.name === selectedTag);
-
       return matchesSearch && matchesTag;
     });
   }, [searchTerm, selectedTag]);
 
   return (
-    <section>
-      <motion.p
-        initial={{ opacity: 0, y: 10 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.4 }}
-        className={`${styles.sectionSubText} text-center`}
-      >
-        Selected builds
-      </motion.p>
-      <motion.h2
-        initial={{ opacity: 0, y: 10 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.4, delay: 0.1 }}
-        className={`${styles.sectionHeadText} text-center`}
-      >
-        Projects
-      </motion.h2>
-      <p className="mx-auto mt-4 max-w-3xl text-center text-xs leading-relaxed text-slate-400 sm:text-sm">
-        A handful of experiments, internal tools, and public experiences that
-        explore automation, reactive UI, and playful data stories.
-      </p>
-
+    <section className="projects-section">
+      {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.5 }}
-        className="mx-auto mt-8 max-w-2xl space-y-4"
+        className="projects-header"
       >
-        <input
-          type="text"
-          placeholder="Search projects..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white placeholder:text-slate-500 focus:border-sky-400 focus:outline-none sm:px-6 sm:py-3 sm:text-base"
-        />
-        <div className="horizontal-scroll -mx-1 flex flex-nowrap gap-2 overflow-x-auto px-1 pb-1 sm:mx-0 sm:flex-wrap sm:justify-center sm:overflow-visible sm:px-0">
+        <p className={`${styles.sectionSubText} text-center`}>
+          Selected builds
+        </p>
+        <h2 className={`${styles.sectionHeadText} text-center`}>
+          Projects
+        </h2>
+        <p className="projects-subtitle">
+          A handful of experiments, internal tools, and public experiences that
+          explore automation, reactive UI, and playful data stories.
+        </p>
+      </motion.div>
+
+      {/* Search & Filters */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5, delay: 0.15 }}
+        className="projects-filters"
+      >
+        <div className="projects-search-wrapper">
+          <svg className="projects-search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          <input
+            type="text"
+            placeholder="Search projects..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="projects-search-input"
+          />
+          {searchTerm && (
+            <button onClick={() => setSearchTerm("")} className="projects-search-clear">
+              ✕
+            </button>
+          )}
+        </div>
+        <div className="projects-tag-filters horizontal-scroll">
           {allTags.map((tag) => (
             <button
               key={tag}
               onClick={() => setSelectedTag(tag)}
-              className={`shrink-0 rounded-full px-4 py-2 text-xs font-semibold transition ${
-                selectedTag === tag
-                  ? "bg-gradient-to-r from-sky-500 to-violet-500 text-white"
-                  : "border border-white/15 bg-white/5 text-slate-300 hover:border-white/30"
-              }`}
+              className={`projects-filter-btn ${selectedTag === tag ? "projects-filter-btn--active" : ""}`}
             >
-              {tag}
+              {tag === "all" ? "All Projects" : tag}
             </button>
           ))}
         </div>
       </motion.div>
 
-      <div className="mt-10 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+      {/* Grid */}
+      <div className="projects-grid">
         {filteredProjects.length > 0 ? (
           filteredProjects.map((project, index) => (
             <ProjectCard key={project.name} project={project} index={index} />
           ))
         ) : (
-          <div className="col-span-full py-12 text-center text-slate-400">
-            No projects found matching your criteria.
-          </div>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="projects-empty"
+          >
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="projects-empty-icon">
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              <line x1="8" y1="11" x2="14" y2="11" />
+            </svg>
+            <p>No projects found matching your criteria.</p>
+            <button
+              onClick={() => { setSearchTerm(""); setSelectedTag("all"); }}
+              className="projects-empty-reset"
+            >
+              Clear filters
+            </button>
+          </motion.div>
         )}
       </div>
     </section>
