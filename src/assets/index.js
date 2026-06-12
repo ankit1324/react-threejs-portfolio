@@ -46,11 +46,11 @@ import whmis from "./company/whmis.png";
 
 import sunnifyimage from "./demonstration 2.jpg";
 import knifethrowimage from "./knifethrow_demonstration.jpg";
-import pythonanalysis from "./data_analysis.png";
+import pythonanalysis from "./data_analysis.jpg";
 import password_generator from "./passwordgenerator.png";
-import financialflowimage from "./FinancialFlowDemonstration.png";
+import financialflowimage from "./FinancialFlowDemonstration.jpg";
 import enterpriseapitester from "./enterpriseapiui.png";
-import vibesocialmedia from "./IMG_0076.png";
+import vibesocialmedia from "./IMG_0076.jpg";
 
 import resume from "./AnkitChaudhary.pdf";
 

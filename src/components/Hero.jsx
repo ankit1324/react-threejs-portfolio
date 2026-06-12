@@ -121,6 +121,29 @@ const AnimatedMainLogo = () => (
   </motion.svg>
 );
 
+const homeStagger = {
+  hidden: {},
+  show: {
+    transition: {
+      staggerChildren: 0.07,
+      delayChildren: 0.04,
+    },
+  },
+};
+
+const homeItem = {
+  hidden: { opacity: 0, y: 16, filter: "blur(6px)" },
+  show: {
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] },
+  },
+};
+
+const orbitLabel =
+  "ASK ME ANYTHING · REACT NATIVE · NODE.JS · AWS · AI AGENT · ";
+
 const contactTileStagger = {
   hidden: {},
   show: {
@@ -145,14 +168,14 @@ const contactTileReveal = {
 };
 
 const quickTabs = [
-  { id: "me", label: "Me", icon: MeIcon, color: "text-[#2ca6a2]" },
-  { id: "projects", label: "Projects", icon: ProjectsIcon, color: "text-[#46a069]" },
-  { id: "education", label: "Edu", icon: EducationIcon, color: "text-[#0ea5a3]" },
-  { id: "experience", label: "Work", icon: ExperienceIcon, color: "text-[#2563eb]" },
-  { id: "certifications", label: "Cert", icon: CertificationIcon, color: "text-[#f59e0b]" },
-  { id: "resume", label: "Resume", icon: ResumeIcon, color: "text-[#0f172a]" },
-  { id: "skills", label: "Skills", icon: SkillsIcon, color: "text-[#8870e9]" },
-  { id: "contact", label: "Contact", icon: ContactIcon, color: "text-[#be922a]" },
+  { id: "me", label: "Me", icon: MeIcon, color: "text-[#2ca6a2]", chip: "bg-[#2ca6a2]/10" },
+  { id: "projects", label: "Projects", icon: ProjectsIcon, color: "text-[#46a069]", chip: "bg-[#46a069]/10" },
+  { id: "education", label: "Edu", icon: EducationIcon, color: "text-[#0ea5a3]", chip: "bg-[#0ea5a3]/10" },
+  { id: "experience", label: "Work", icon: ExperienceIcon, color: "text-[#2563eb]", chip: "bg-[#2563eb]/10" },
+  { id: "certifications", label: "Cert", icon: CertificationIcon, color: "text-[#f59e0b]", chip: "bg-[#f59e0b]/10" },
+  { id: "resume", label: "Resume", icon: ResumeIcon, color: "text-[#0f172a]", chip: "bg-[#0f172a]/[0.07]" },
+  { id: "skills", label: "Skills", icon: SkillsIcon, color: "text-[#8870e9]", chip: "bg-[#8870e9]/10" },
+  { id: "contact", label: "Contact", icon: ContactIcon, color: "text-[#be922a]", chip: "bg-[#be922a]/10" },
 ];
 
 const tileQueryPrompts = {
@@ -272,6 +295,22 @@ const Hero = () => {
     mql.addEventListener('change', handler);
     return () => mql.removeEventListener('change', handler);
   }, []);
+
+  const [localTime, setLocalTime] = useState("");
+
+  useEffect(() => {
+    const formatTime = () =>
+      new Intl.DateTimeFormat("en-GB", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+        timeZone: "Asia/Kolkata",
+      }).format(new Date());
+
+    setLocalTime(formatTime());
+    const timer = setInterval(() => setLocalTime(formatTime()), 30000);
+    return () => clearInterval(timer);
+  }, []);
   const [gifLoaded, setGifLoaded] = useState(false);
   const [isAvatarAnimating, setIsAvatarAnimating] = useState(false);
   const [gifRunId, setGifRunId] = useState(0);
@@ -294,11 +333,25 @@ const Hero = () => {
   const fullChatScrollRef = useRef(null);
 
   useEffect(() => {
+    // The animated avatar GIF is heavy (~7 MB); fetch it after the browser is
+    // idle so it never competes with first paint.
     const gifImage = new Image();
-    gifImage.src = aiAvatarGif;
-    gifImage.onload = () => setGifLoaded(true);
+    const startPreload = () => {
+      gifImage.src = aiAvatarGif;
+      gifImage.onload = () => setGifLoaded(true);
+    };
+
+    let idleId;
+    let fallbackTimer;
+    if ("requestIdleCallback" in window) {
+      idleId = window.requestIdleCallback(startPreload, { timeout: 4000 });
+    } else {
+      fallbackTimer = setTimeout(startPreload, 2500);
+    }
 
     return () => {
+      if (idleId) window.cancelIdleCallback(idleId);
+      if (fallbackTimer) clearTimeout(fallbackTimer);
       if (animationTimerRef.current) {
         clearTimeout(animationTimerRef.current);
       }
@@ -556,6 +609,7 @@ const Hero = () => {
   const activeViewKey = isAiPreviewView ? `ai-${pendingTab}` : activeTab || "home";
   const isExpandedView =
     isAiPreviewView ||
+    isMeView ||
     isProjectsView ||
     isSkillsView ||
     isContactView ||
@@ -568,9 +622,33 @@ const Hero = () => {
   return (
     <section
       id="home"
-      className="relative -mx-4 min-h-screen overflow-hidden bg-[#f3f4f6] px-4 pt-10 pb-20 text-slate-900 sm:-mx-10 sm:px-10 sm:pt-14 sm:pb-24 lg:-mx-20 lg:px-20 lg:pt-16"
+      className={`hero-surface relative overflow-hidden text-slate-900 ${
+        isExpandedView
+          ? "min-h-[100dvh] px-4 py-8 sm:px-10 sm:py-12 lg:px-20"
+          : "flex h-[100dvh] flex-col px-6 py-3 sm:px-12 sm:py-5 lg:px-16"
+      }`}
     >
-      <div className="mx-auto max-w-6xl">
+      {!isExpandedView && (
+        <>
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-2.5 z-0 rounded-[20px] border border-slate-900/[0.07] sm:inset-4 sm:rounded-[26px]"
+          />
+          <header className="pointer-events-none absolute left-0 right-0 top-0 z-20 flex items-center justify-between px-6 pt-5 sm:px-12 sm:pt-8 lg:px-16">
+            <span className="text-[0.58rem] font-bold uppercase tracking-[0.3em] text-slate-500 sm:text-[0.66rem]">
+              Ankit Chaudhary
+            </span>
+            <span className="text-[0.58rem] font-semibold uppercase tracking-[0.16em] text-slate-400 sm:text-[0.66rem] sm:tracking-[0.2em]">
+              Chandigarh, IN{localTime ? ` — ${localTime} IST` : ""}
+            </span>
+          </header>
+        </>
+      )}
+      <div
+        className={`mx-auto w-full max-w-6xl ${
+          isExpandedView ? "" : "flex min-h-0 flex-1 flex-col justify-center"
+        }`}
+      >
         <div className={`mx-auto text-center ${isExpandedView ? "max-w-6xl" : "max-w-4xl"}`}>
           <AnimatePresence mode="wait">
             <motion.div
@@ -777,8 +855,11 @@ const Hero = () => {
                   className="mx-auto mt-2 max-w-6xl text-left"
                 >
                   <ChildCloseButton onClick={() => setActiveTab(null)} />
-                  <h2 className="text-[2.7rem] font-extrabold leading-none tracking-tight text-slate-900 sm:text-[3.5rem]">
-                    My Projects
+                  <h2 className="text-[2.5rem] font-extrabold leading-[1.02] tracking-[-0.025em] text-slate-900 sm:text-[3.6rem]">
+                    My{" "}
+                    <span className="font-display-serif italic font-normal tracking-normal text-[#1a7ef0]">
+                      Projects
+                    </span>
                   </h2>
                   <p className="mt-3 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
                     A curated collection of real-world apps, tools, and experiments.
@@ -943,9 +1024,6 @@ const Hero = () => {
                     </div>
                   )}
 
-                  <p className="mt-8 text-[1.2rem] leading-relaxed text-slate-800 sm:text-[1.45rem]">
-                    I&apos;ve got some exciting projects under my belt. Here are a few highlights:
-                  </p>
                 </motion.div>
               ) : isSkillsView ? (
                 <motion.div
@@ -956,7 +1034,7 @@ const Hero = () => {
                 >
                   <ChildCloseButton onClick={() => setActiveTab(null)} />
                   <div className="flex items-start justify-between gap-4">
-                    <h2 className="text-[2.8rem] font-extrabold leading-none tracking-tight text-slate-400 sm:text-[4rem]">
+                    <h2 className="text-[2.5rem] font-extrabold leading-[1.02] tracking-[-0.025em] text-slate-900 sm:text-[3.6rem]">
                       Skills &amp; Expertise
                     </h2>
                     <div className="inline-flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white shadow-[0_8px_20px_rgba(15,23,42,0.08)]">
@@ -973,7 +1051,7 @@ const Hero = () => {
                       { title: "AI & Fullstack Engineering", list: skillsContent.aiFullstack },
                     ].map((group) => (
                       <div key={group.title}>
-                        <h3 className="text-[1.9rem] font-semibold tracking-tight text-slate-900 sm:text-[2.3rem]">
+                        <h3 className="text-[1.4rem] font-bold tracking-[-0.015em] text-slate-900 sm:text-[1.7rem]">
                           {group.title}
                         </h3>
                         <div className="mt-3 flex flex-wrap gap-3">
@@ -983,7 +1061,7 @@ const Hero = () => {
                               initial={{ opacity: 0, y: 8 }}
                               animate={{ opacity: 1, y: 0 }}
                               transition={{ duration: 0.46, delay: index * 0.1 }}
-                              className="rounded-2xl bg-[#12151d] px-5 py-2 text-[1rem] font-medium text-slate-100 sm:text-[1.14rem]"
+                              className="rounded-xl bg-[#12151d] px-4 py-2 text-[0.92rem] font-medium text-slate-100 sm:text-[1rem]"
                             >
                               {item}
                             </motion.span>
@@ -1002,7 +1080,7 @@ const Hero = () => {
                 >
                   <ChildCloseButton onClick={() => setActiveTab(null)} />
                   <div className="flex items-start justify-between gap-4">
-                    <h2 className="text-[2.8rem] font-extrabold leading-none tracking-tight text-slate-400 sm:text-[4rem]">
+                    <h2 className="text-[2.5rem] font-extrabold leading-[1.02] tracking-[-0.025em] text-slate-900 sm:text-[3.6rem]">
                       Contact &amp; Collaboration
                     </h2>
                     <div className="inline-flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white shadow-[0_8px_20px_rgba(15,23,42,0.08)]">
@@ -1010,13 +1088,13 @@ const Hero = () => {
                     </div>
                   </div>
 
-                  <p className="mt-5 text-[1.2rem] leading-relaxed text-slate-700 sm:text-[1.35rem]">
+                  <p className="mt-4 max-w-2xl text-[1rem] leading-relaxed text-slate-600 sm:text-[1.1rem]">
                     Tell me about the product, team, or crazy idea you&apos;re building. I usually respond within 24 hours.
                   </p>
 
                   <div className="mt-8 space-y-8">
                     <div>
-                      <h3 className="text-[1.9rem] font-semibold tracking-tight text-slate-900 sm:text-[2.3rem]">
+                      <h3 className="text-[1.4rem] font-bold tracking-[-0.015em] text-slate-900 sm:text-[1.7rem]">
                         Reach Me
                       </h3>
                       <motion.div
@@ -1028,20 +1106,20 @@ const Hero = () => {
                         <motion.a
                           variants={contactTileReveal}
                           href="mailto:ankitdx245@gmail.com"
-                          className="rounded-2xl bg-[#12151d] px-5 py-2 text-[1rem] font-medium text-slate-100 transition hover:bg-slate-800 sm:text-[1.14rem]"
+                          className="rounded-xl bg-[#12151d] px-4 py-2 text-[0.92rem] font-medium text-slate-100 transition hover:bg-slate-800 sm:text-[1rem]"
                         >
                           ankitdx245@gmail.com
                         </motion.a>
                         <motion.a
                           variants={contactTileReveal}
                           href="tel:+919805531236"
-                          className="rounded-2xl bg-[#12151d] px-5 py-2 text-[1rem] font-medium text-slate-100 transition hover:bg-slate-800 sm:text-[1.14rem]"
+                          className="rounded-xl bg-[#12151d] px-4 py-2 text-[0.92rem] font-medium text-slate-100 transition hover:bg-slate-800 sm:text-[1rem]"
                         >
                           +91 98055 31236
                         </motion.a>
                         <motion.span
                           variants={contactTileReveal}
-                          className="rounded-2xl bg-[#12151d] px-5 py-2 text-[1rem] font-medium text-slate-100 sm:text-[1.14rem]"
+                          className="rounded-xl bg-[#12151d] px-4 py-2 text-[0.92rem] font-medium text-slate-100 sm:text-[1rem]"
                         >
                           Chandigarh · Himachal Pradesh
                         </motion.span>
@@ -1049,7 +1127,7 @@ const Hero = () => {
                     </div>
 
                     <div>
-                      <h3 className="text-[1.9rem] font-semibold tracking-tight text-slate-900 sm:text-[2.3rem]">
+                      <h3 className="text-[1.4rem] font-bold tracking-[-0.015em] text-slate-900 sm:text-[1.7rem]">
                         Profiles
                       </h3>
                       <motion.div
@@ -1063,7 +1141,7 @@ const Hero = () => {
                           href="https://www.linkedin.com/in/ankitchaudhary1324/"
                           target="_blank"
                           rel="noreferrer"
-                          className="rounded-2xl bg-[#12151d] px-5 py-2 text-[1rem] font-medium text-slate-100 transition hover:bg-slate-800 sm:text-[1.14rem]"
+                          className="rounded-xl bg-[#12151d] px-4 py-2 text-[0.92rem] font-medium text-slate-100 transition hover:bg-slate-800 sm:text-[1rem]"
                         >
                           LinkedIn
                         </motion.a>
@@ -1072,7 +1150,7 @@ const Hero = () => {
                           href="https://github.com/ankit1324"
                           target="_blank"
                           rel="noreferrer"
-                          className="rounded-2xl bg-[#12151d] px-5 py-2 text-[1rem] font-medium text-slate-100 transition hover:bg-slate-800 sm:text-[1.14rem]"
+                          className="rounded-xl bg-[#12151d] px-4 py-2 text-[0.92rem] font-medium text-slate-100 transition hover:bg-slate-800 sm:text-[1rem]"
                         >
                           GitHub
                         </motion.a>
@@ -1081,7 +1159,7 @@ const Hero = () => {
                           href={resumePdf}
                           target="_blank"
                           rel="noreferrer"
-                          className="rounded-2xl bg-[#12151d] px-5 py-2 text-[1rem] font-medium text-slate-100 transition hover:bg-slate-800 sm:text-[1.14rem]"
+                          className="rounded-xl bg-[#12151d] px-4 py-2 text-[0.92rem] font-medium text-slate-100 transition hover:bg-slate-800 sm:text-[1rem]"
                         >
                           Resume
                         </motion.a>
@@ -1089,7 +1167,7 @@ const Hero = () => {
                     </div>
 
                     <div>
-                      <h3 className="text-[1.9rem] font-semibold tracking-tight text-slate-900 sm:text-[2.3rem]">
+                      <h3 className="text-[1.4rem] font-bold tracking-[-0.015em] text-slate-900 sm:text-[1.7rem]">
                         Availability
                       </h3>
                       <motion.div
@@ -1108,7 +1186,7 @@ const Hero = () => {
                           <motion.span
                             variants={contactTileReveal}
                             key={item}
-                            className="rounded-2xl bg-[#12151d] px-5 py-2 text-[1rem] font-medium text-slate-100 sm:text-[1.14rem]"
+                            className="rounded-xl bg-[#12151d] px-4 py-2 text-[0.92rem] font-medium text-slate-100 sm:text-[1rem]"
                           >
                             {item}
                           </motion.span>
@@ -1126,7 +1204,7 @@ const Hero = () => {
                 >
                   <ChildCloseButton onClick={() => setActiveTab(null)} />
                   <div className="flex items-start justify-between gap-4">
-                    <h2 className="text-[2.8rem] font-extrabold leading-none tracking-tight text-slate-400 sm:text-[4rem]">
+                    <h2 className="text-[2.5rem] font-extrabold leading-[1.02] tracking-[-0.025em] text-slate-900 sm:text-[3.6rem]">
                       Resume
                     </h2>
                     <div className="inline-flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white shadow-[0_8px_20px_rgba(15,23,42,0.08)]">
@@ -1134,7 +1212,7 @@ const Hero = () => {
                     </div>
                   </div>
 
-                  <p className="mt-5 text-[1.1rem] leading-relaxed text-slate-700 sm:text-[1.25rem]">
+                  <p className="mt-4 max-w-2xl text-[1rem] leading-relaxed text-slate-600 sm:text-[1.1rem]">
                     Preview my latest resume and download a copy instantly.
                   </p>
 
@@ -1187,7 +1265,7 @@ const Hero = () => {
                 >
                   <ChildCloseButton onClick={() => setActiveTab(null)} />
                   <div className="flex items-start justify-between gap-4">
-                    <h2 className="text-[2.8rem] font-extrabold leading-none tracking-tight text-slate-400 sm:text-[4rem]">
+                    <h2 className="text-[2.5rem] font-extrabold leading-[1.02] tracking-[-0.025em] text-slate-900 sm:text-[3.6rem]">
                       Certifications
                     </h2>
                     <div className="inline-flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white shadow-[0_8px_20px_rgba(15,23,42,0.08)]">
@@ -1197,7 +1275,7 @@ const Hero = () => {
 
                   <div className="mt-8 space-y-8">
                     <div>
-                      <h3 className="text-[1.9rem] font-semibold tracking-tight text-slate-900 sm:text-[2.3rem]">
+                      <h3 className="text-[1.4rem] font-bold tracking-[-0.015em] text-slate-900 sm:text-[1.7rem]">
                         Certificate Tracks
                       </h3>
                       <div className="mt-3 flex flex-wrap gap-3">
@@ -1207,7 +1285,7 @@ const Hero = () => {
                             initial={{ opacity: 0, y: 8 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.46, delay: index * 0.11 }}
-                            className="rounded-2xl bg-[#12151d] px-5 py-2 text-[1rem] font-medium text-slate-100 sm:text-[1.14rem]"
+                            className="rounded-xl bg-[#12151d] px-4 py-2 text-[0.92rem] font-medium text-slate-100 sm:text-[1rem]"
                           >
                             {item}
                           </motion.span>
@@ -1216,7 +1294,7 @@ const Hero = () => {
                     </div>
 
                     <div>
-                      <h3 className="text-[1.9rem] font-semibold tracking-tight text-slate-900 sm:text-[2.3rem]">
+                      <h3 className="text-[1.4rem] font-bold tracking-[-0.015em] text-slate-900 sm:text-[1.7rem]">
                         Credentials
                       </h3>
                       <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -1226,7 +1304,7 @@ const Hero = () => {
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.5, delay: index * 0.14 }}
-                            className="rounded-3xl border border-slate-300 bg-white p-5 shadow-[0_8px_24px_rgba(15,23,42,0.05)]"
+                            className="rounded-3xl border border-slate-200/90 bg-white p-5 shadow-[0_8px_24px_rgba(15,23,42,0.05)] transition-all duration-300 hover:-translate-y-1 hover:border-slate-300 hover:shadow-[0_16px_40px_rgba(15,23,42,0.1)]"
                           >
                             <p className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">
                               {cert.date}
@@ -1260,7 +1338,7 @@ const Hero = () => {
                 >
                   <ChildCloseButton onClick={() => setActiveTab(null)} />
                   <div className="flex items-start justify-between gap-4">
-                    <h2 className="text-[2.8rem] font-extrabold leading-none tracking-tight text-slate-400 sm:text-[4rem]">
+                    <h2 className="text-[2.5rem] font-extrabold leading-[1.02] tracking-[-0.025em] text-slate-900 sm:text-[3.6rem]">
                       Education
                     </h2>
                     <div className="inline-flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white shadow-[0_8px_20px_rgba(15,23,42,0.08)]">
@@ -1268,7 +1346,7 @@ const Hero = () => {
                     </div>
                   </div>
 
-                  <p className="mt-5 text-[1.1rem] leading-relaxed text-slate-700 sm:text-[1.25rem]">
+                  <p className="mt-4 max-w-2xl text-[1rem] leading-relaxed text-slate-600 sm:text-[1.1rem]">
                     Academic background and key coursework that shaped my engineering foundation.
                   </p>
 
@@ -1279,7 +1357,7 @@ const Hero = () => {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.45, delay: index * 0.1 }}
-                        className="rounded-3xl border border-slate-300 bg-white p-5 shadow-[0_8px_24px_rgba(15,23,42,0.05)]"
+                        className="rounded-3xl border border-slate-200/90 bg-white p-5 shadow-[0_8px_24px_rgba(15,23,42,0.05)] transition-all duration-300 hover:-translate-y-1 hover:border-slate-300 hover:shadow-[0_16px_40px_rgba(15,23,42,0.1)]"
                       >
                         <div className="flex items-start gap-3">
                           <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 p-2">
@@ -1324,7 +1402,7 @@ const Hero = () => {
                 >
                   <ChildCloseButton onClick={() => setActiveTab(null)} />
                   <div className="flex items-start justify-between gap-4">
-                    <h2 className="text-[2.8rem] font-extrabold leading-none tracking-tight text-slate-400 sm:text-[4rem]">
+                    <h2 className="text-[2.5rem] font-extrabold leading-[1.02] tracking-[-0.025em] text-slate-900 sm:text-[3.6rem]">
                       Work Experience
                     </h2>
                     <div className="inline-flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white shadow-[0_8px_20px_rgba(15,23,42,0.08)]">
@@ -1332,7 +1410,7 @@ const Hero = () => {
                     </div>
                   </div>
 
-                  <p className="mt-5 text-[1.1rem] leading-relaxed text-slate-700 sm:text-[1.25rem]">
+                  <p className="mt-4 max-w-2xl text-[1rem] leading-relaxed text-slate-600 sm:text-[1.1rem]">
                     Product delivery experience across frontend engineering, cloud infrastructure, and collaboration.
                   </p>
 
@@ -1343,7 +1421,7 @@ const Hero = () => {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.45, delay: index * 0.1 }}
-                        className="rounded-3xl border border-slate-300 bg-white p-5 shadow-[0_8px_24px_rgba(15,23,42,0.05)]"
+                        className="rounded-3xl border border-slate-200/90 bg-white p-5 shadow-[0_8px_24px_rgba(15,23,42,0.05)] transition-all duration-300 hover:-translate-y-1 hover:border-slate-300 hover:shadow-[0_16px_40px_rgba(15,23,42,0.1)]"
                       >
                         <div className="flex items-start gap-3">
                           <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 p-2">
@@ -1411,8 +1489,11 @@ const Hero = () => {
                       </div>
 
                       <div className="min-w-0">
-                        <h2 className="text-[2rem] font-bold leading-tight text-slate-900 sm:text-[2.6rem]">
-                          Ankit Chaudhary
+                        <h2 className="text-[2rem] font-bold leading-tight tracking-[-0.02em] text-slate-900 sm:text-[2.6rem]">
+                          Ankit{" "}
+                          <span className="font-display-serif italic font-normal tracking-normal text-[#1a7ef0]">
+                            Chaudhary
+                          </span>
                         </h2>
                         <p className="mt-2 text-[1.05rem] text-slate-500 sm:text-[1.4rem]">
                           React Native Developer
@@ -1447,49 +1528,86 @@ const Hero = () => {
                   </div>
                 </motion.div>
               ) : (
-                <>
+                <motion.div variants={homeStagger} initial="hidden" animate="show">
                   <motion.div
-                    initial={{ opacity: 0, y: 18 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.45 }}
+                    variants={homeItem}
+                    className="mx-auto inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200/70 bg-white shadow-[0_8px_20px_rgba(15,23,42,0.08)] sm:h-12 sm:w-12"
                   >
-                    <div className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-white shadow-[0_8px_20px_rgba(15,23,42,0.08)]">
-                      <AnimatedMainLogo />
+                    <AnimatedMainLogo />
+                  </motion.div>
+                  <motion.p
+                    variants={homeItem}
+                    className="mt-3 text-[1.15rem] font-medium leading-tight tracking-tight text-slate-600 sm:text-[1.5rem]"
+                  >
+                    Hey, I&apos;m Ankit
+                    <span className="ml-2">👋</span>
+                  </motion.p>
+                  <motion.h1
+                    variants={homeItem}
+                    className="mt-0.5 text-[2.2rem] font-black leading-[1.02] tracking-[-0.03em] text-slate-900 sm:text-[3.8rem]"
+                  >
+                    Software{" "}
+                    <span className="font-display-serif italic font-normal tracking-normal text-[#1a7ef0]">
+                      Engineer
+                    </span>
+                  </motion.h1>
+                  <motion.div
+                    variants={homeItem}
+                    className="relative mx-auto mt-6 h-36 w-36 sm:mt-7 sm:h-44 sm:w-44"
+                  >
+                    <svg
+                      viewBox="0 0 120 120"
+                      aria-hidden="true"
+                      className="hero-orbit pointer-events-none absolute -inset-5 h-[calc(100%+2.5rem)] w-[calc(100%+2.5rem)] sm:-inset-6 sm:h-[calc(100%+3rem)] sm:w-[calc(100%+3rem)]"
+                    >
+                      <defs>
+                        <path
+                          id="hero-orbit-path"
+                          d="M60,60 m-54,0 a54,54 0 1,1 108,0 a54,54 0 1,1 -108,0"
+                          fill="none"
+                        />
+                      </defs>
+                      <text
+                        fill="rgba(100, 116, 139, 0.55)"
+                        fontSize="6.5"
+                        letterSpacing="1.6"
+                        fontWeight="600"
+                      >
+                        <textPath href="#hero-orbit-path">{orbitLabel}</textPath>
+                      </text>
+                    </svg>
+                    <div className="h-full w-full overflow-hidden rounded-full bg-white shadow-[0_25px_60px_rgba(15,23,42,0.14)] ring-1 ring-slate-200/80 transition-shadow duration-500 hover:shadow-[0_30px_70px_rgba(26,126,240,0.18)]">
+                      <img
+                        src={avatarSource}
+                        alt="Ankit profile"
+                        className="h-full w-full cursor-pointer object-cover"
+                        loading="eager"
+                        onClick={runAvatarAnimation}
+                      />
                     </div>
-                    <p className="mt-4 text-[1.65rem] font-semibold leading-tight tracking-tight sm:text-[2.3rem]">
-                      Hey, I&apos;m Ankit
-                      <span className="ml-2">👋</span>
-                    </p>
-                    <h1 className="mt-2 text-[2.3rem] font-black leading-[0.96] tracking-tight sm:text-[4.6rem]">
-                      Software Engineer
-                    </h1>
                   </motion.div>
-
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.96 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.1, duration: 0.4 }}
-                    className="mx-auto mt-7 h-52 w-52 overflow-hidden rounded-full bg-white shadow-[0_25px_60px_rgba(15,23,42,0.12)] sm:mt-8 sm:h-64 sm:w-64"
-                  >
-                    <img
-                      src={avatarSource}
-                      alt="Ankit profile"
-                      className="h-full w-full cursor-pointer object-cover"
-                      loading="eager"
-                      onClick={runAvatarAnimation}
-                    />
-                  </motion.div>
-                </>
+                </motion.div>
               )}
             </motion.div>
           </AnimatePresence>
 
           {!isAiPreviewView && !isAiFullChatView && (
             <>
-              <form
+              <motion.form
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.55, delay: 0.42, ease: [0.22, 1, 0.36, 1] }}
                 onSubmit={handleAskSubmit}
-                className="mx-auto mt-8 flex w-full max-w-2xl items-center rounded-full border border-slate-300 bg-white px-2.5 py-1.5 shadow-[0_8px_24px_rgba(15,23,42,0.05)] sm:mt-10 sm:px-3 sm:py-2"
+                className={`hero-ask-bar mx-auto flex w-full max-w-2xl items-center rounded-full border border-slate-300/90 bg-white px-2.5 py-1 shadow-[0_8px_24px_rgba(15,23,42,0.05)] sm:px-3 sm:py-1.5 ${isExpandedView ? "mt-8" : "mt-6 sm:mt-7"}`}
               >
+                <svg
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  className="ml-2 h-4 w-4 shrink-0 text-[#1a7ef0]/70"
+                  fill="currentColor"
+                >
+                  <path d="M12 2.5 14 9.5 21.5 12 14 14.5 12 21.5 10 14.5 2.5 12 10 9.5 12 2.5Z" />
+                </svg>
                 <input
                   type="text"
                   value={askInput}
@@ -1503,17 +1621,29 @@ const Hero = () => {
                 <button
                   type="submit"
                   disabled={!askInput.trim() || askAiLoading}
-                  className={`inline-flex h-10 w-10 items-center justify-center rounded-full text-lg text-white transition sm:h-12 sm:w-12 sm:text-xl ${askInput.trim() && !askAiLoading
-                    ? "bg-[#6aa5ff] hover:bg-[#4f91f7]"
-                    : "cursor-not-allowed bg-slate-300 text-slate-500"
+                  className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-white transition sm:h-12 sm:w-12 ${askInput.trim() && !askAiLoading
+                    ? "bg-[#1a7ef0] shadow-[0_6px_16px_rgba(26,126,240,0.35)] hover:bg-[#1668c7] hover:shadow-[0_8px_20px_rgba(26,126,240,0.45)]"
+                    : "cursor-not-allowed bg-slate-200 text-slate-400"
                     }`}
                   aria-label="Submit question"
                 >
-                  ↑
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.4"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M12 19V5" />
+                    <path d="m5 12 7-7 7 7" />
+                  </svg>
                 </button>
-              </form>
+              </motion.form>
               {(askAiLoading || askAiResponse || askAiError) && (
-                <div className="mx-auto mt-4 w-full max-w-2xl rounded-[24px] border border-slate-300 bg-white p-3 text-left shadow-[0_12px_30px_rgba(15,23,42,0.08)] sm:p-4">
+                <div className="mx-auto mt-3 max-h-[26dvh] w-full max-w-2xl overflow-y-auto rounded-[24px] border border-slate-300 bg-white p-3 text-left shadow-[0_12px_30px_rgba(15,23,42,0.08)] sm:p-4">
                   <div className="flex items-start gap-3">
                     <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-white">
                       <img src={aiAvatar} alt="AI avatar" className="h-full w-full object-cover" />
@@ -1564,29 +1694,53 @@ const Hero = () => {
                 </div>
               )}
 
-              <p className="mx-auto mt-5 w-full max-w-[1240px] text-left text-xs font-medium uppercase tracking-[0.14em] text-slate-500 sm:text-sm">
-                Tap a section to explore
-              </p>
-              <div className="mx-auto mt-7 grid w-full max-w-[1240px] grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3 lg:grid-cols-8">
-                {quickTabs.map((tab) => (
-                  <button
-                    key={tab.id}
-                    type="button"
-                    onClick={() => triggerTabWithAi(tab.id)}
-                    className={`flex h-[72px] flex-col items-center justify-center rounded-[18px] border bg-white px-3 py-2 transition sm:h-[78px] ${activeTab === tab.id || pendingTab === tab.id
-                      ? "border-slate-400 shadow-[0_8px_20px_rgba(15,23,42,0.06)]"
-                      : "border-slate-300/90 hover:border-slate-400"
-                      }`}
-                  >
-                    <span className={tab.color}>
-                      <tab.icon />
-                    </span>
-                    <span className="mt-1.5 text-[0.95rem] font-medium leading-none text-slate-700 sm:text-[1.1rem]">
-                      {tab.label}
-                    </span>
-                  </button>
-                ))}
-              </div>
+              <motion.div
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.55, delay: 0.55, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <div className="mx-auto mt-4 flex w-full max-w-[1240px] items-center gap-4 sm:mt-5">
+                  <span className="text-[0.62rem] font-semibold uppercase tracking-[0.22em] text-slate-400 sm:text-[0.7rem]">
+                    Tap a section to explore
+                  </span>
+                  <span className="h-px flex-1 bg-gradient-to-r from-slate-300/80 to-transparent" />
+                </div>
+                <div className="mx-auto mt-2.5 grid w-full max-w-[1240px] grid-cols-4 gap-2 sm:mt-3 sm:gap-3 lg:grid-cols-8">
+                  {quickTabs.map((tab) => (
+                    <button
+                      key={tab.id}
+                      type="button"
+                      onClick={() => triggerTabWithAi(tab.id)}
+                      className={`hero-tile group relative flex h-[62px] flex-col items-center justify-center gap-1 rounded-[16px] border bg-white px-1.5 py-1.5 sm:h-[76px] sm:gap-1.5 sm:rounded-[18px] sm:px-3 sm:py-2 ${activeTab === tab.id || pendingTab === tab.id
+                        ? "border-slate-400 shadow-[0_8px_20px_rgba(15,23,42,0.06)]"
+                        : "border-slate-300/80 hover:border-slate-400"
+                        }`}
+                    >
+                      <svg
+                        aria-hidden="true"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.4"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="pointer-events-none absolute right-2 top-2 h-2.5 w-2.5 -translate-x-0.5 translate-y-0.5 text-[#1a7ef0] opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:translate-y-0 group-hover:opacity-100"
+                      >
+                        <path d="M7 17 17 7" />
+                        <path d="M9 7h8v8" />
+                      </svg>
+                      <span
+                        className={`inline-flex h-6 w-6 items-center justify-center rounded-lg transition-transform duration-300 group-hover:scale-110 sm:h-7 sm:w-7 ${tab.chip} ${tab.color}`}
+                      >
+                        <tab.icon />
+                      </span>
+                      <span className="text-[0.72rem] font-medium leading-none text-slate-700 sm:text-[0.95rem]">
+                        {tab.label}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </motion.div>
             </>
           )}
         </div>
@@ -1594,7 +1748,7 @@ const Hero = () => {
       </div>
 
       {!isMeView && !isExpandedView && (
-        <p className="pointer-events-none absolute bottom-[-8px] left-1/2 -translate-x-1/2 select-none text-[3.8rem] font-black leading-none tracking-[0.065em] text-slate-300/20 sm:bottom-[-18px] sm:text-[10.8rem]">
+        <p className="hero-watermark font-display-serif pointer-events-none absolute bottom-[-8px] left-1/2 -z-0 -translate-x-1/2 select-none whitespace-nowrap text-[3rem] italic leading-none tracking-tight sm:bottom-[-22px] sm:text-[8.5rem]">
           Chaudhary
         </p>
       )}

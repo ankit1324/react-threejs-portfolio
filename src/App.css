@@ -5,38 +5,6 @@
 
 .app-shell {
   position: relative;
-  min-height: 100vh;
+  min-height: 100dvh;
   overflow: hidden;
-  background: radial-gradient(
-      circle at top,
-      rgba(56, 189, 248, 0.12),
-      transparent 35%
-    ),
-    radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.15), transparent 40%),
-    #030014;
-}
-
-.app-shell::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-      circle at 80% 0%,
-      rgba(216, 180, 254, 0.2),
-      transparent 45%
-    ),
-    radial-gradient(circle at 10% 90%, rgba(248, 113, 113, 0.15), transparent 55%);
-  opacity: 0.6;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.app-shell > * {
-  position: relative;
-  z-index: 1;
-}
-
-.hero-canvas canvas {
-  width: 100% !important;
-  height: 100% !important;
 }
