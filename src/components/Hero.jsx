@@ -782,9 +782,6 @@ const Hero = () => {
                             </p>
                             <p className="mt-1 text-lg font-semibold text-slate-900">Ask me anything</p>
                           </div>
-                          <span className="rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
-                            Gemini 2.5 Flash
-                          </span>
                         </div>
 
                         <div
