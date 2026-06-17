@@ -1536,18 +1536,24 @@ const Hero = () => {
                     variants={homeItem}
                     className="mt-3 text-[1.15rem] font-medium leading-tight tracking-tight text-slate-600 sm:text-[1.5rem]"
                   >
-                    Hey, I&apos;m Ankit
+                    Hey, I&apos;m
                     <span className="ml-2">👋</span>
                   </motion.p>
                   <motion.h1
                     variants={homeItem}
                     className="mt-0.5 text-[2.2rem] font-black leading-[1.02] tracking-[-0.03em] text-slate-900 sm:text-[3.8rem]"
                   >
-                    Software{" "}
+                    Ankit{" "}
                     <span className="font-display-serif italic font-normal tracking-normal text-[#1a7ef0]">
-                      Engineer
+                      Chaudhary
                     </span>
                   </motion.h1>
+                  <motion.p
+                    variants={homeItem}
+                    className="mt-3 text-[1.05rem] font-semibold leading-tight text-slate-600 sm:text-[1.35rem]"
+                  >
+                    Software Developer
+                  </motion.p>
                   <motion.div
                     variants={homeItem}
                     className="relative mx-auto mt-6 h-36 w-36 sm:mt-7 sm:h-44 sm:w-44"
